@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+#title-container {
+  left: 960px;
+  width: 350px;
+  height: 300px;
+  position: absolute;
+}
+
+#page-title {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 30px;
+  color: black;
+  position: absolute;
+}
+
+#page-title-2 {
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 20px;
+  color: #e1e1e1;
+  position: absolute;
+  top: 90px;
+}
+
+#map-container {
+  position: absolute;
+  left: 50px;
+}
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-width: 0.5;
+}
+
+.state-labels {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 12px;
+  color: white;
+}
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+<div id="title-container">
+  <h1 id="page-title">Police Involved Shootings Per Capita</h1>
+  <h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
+</div>
+<div id="map-container"></div>
+
+<script>
+
+// set the height and width of the svg
+var width = 960,
+    height = 500;
+
+// set the projection
+var projection = d3.geoAlbersUsa()
+    .scale(1000)
+    .translate([width / 2, height / 2]);
+
+// set the path
+var path = d3.geoPath()
+    .projection(projection);
+
+// create an empty dataset variable
+var dataset;
+
+// append the svg
+var svg = d3.select("#map-container").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// create a function to assign fill color based on values
+var quantize = function(d){
+  if(d < 1){
+    return "rgb(247,251,255)";
+  }
+  else if(d < 3){
+    return "rgb(222,235,247)";
+  }
+  else if(d < 5){
+    return "rgb(198,219,239)";
+  }
+  else if(d < 7){
+    return "rgb(158,202,225)";
+  }
+  else if(d < 10){
+    return "rgb(107,174,214)";
+  }
+  else {
+    return "rgb(66,146,198)";
+  }
+};
+
+// load the data
+d3.json("usa.geojson", function(error, usa) {
+  if (error) return console.error(error);
+  console.log(usa);
+  dataset = usa.features;
+
+  svg.append("g")
+      .attr("class", "states")
+      .selectAll("path")
+      .data(dataset)
+      .enter()
+      .append("path")
+      .attr("fill", function(d) {
+        return quantize(d.properties.per_mil);
+      })
+      .attr("d", path);
+
+  svg.append("path")
+      .datum(dataset)
+      .attr("d", path);
+
+  svg.selectAll(".state-labels")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
+      .attr("font-size", "8px")
+      .attr("color", function(d){
+        return "#fff";
+      })
+      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+      .text(function(d){
+        return d.properties.STUSPS;
+      });
+
+});
+
+// position the svg
+$("svg").css({left: "25%"});
+
+
+
+</script>
