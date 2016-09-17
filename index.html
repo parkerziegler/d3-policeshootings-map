@@ -2,26 +2,43 @@
 <meta charset="utf-8">
 <style>
 
-#title-container {
-  left: 900px;
-  width: 350px;
-  height: 300px;
-  position: absolute;
+#page-title {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 30px;
+  color: black;
+  position: fixed;
+  display: inline-block;
+  padding-left: 10px;
+  padding-bottom: 15px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-#page-title {
+#page-title-2 {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, sans-serif;
+  font-size: 30px;
+  color: #999;
+  position: fixed;
+  display: inline-block;
+  left: 690px;
+  padding-bottom: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#page-title-3{
   font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
   font-size: 30px;
   color: black;
   position: absolute;
 }
 
-#page-title-2 {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, sans-serif;
-  font-size: 20px;
-  color: #999;
-  position: absolute;
-  top: 90px;
+#title-container {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  background-color: #FFE800;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
 #title-container-2 {
@@ -32,49 +49,52 @@
   top: 620px;
 }
 
-#page-title-3{
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 30px;
-  color: black;
+#map-container{
+  top: 70px;
   position: absolute;
 }
 
-#state-container{
-  position:absolute;
-  top: 500px;
-  height: 100px;
-  width: 960px;
-  left: 100px;
-}
-
-#percap-container{
-  position:absolute;
-  top: 555px;
-  height: 100px;
-  width: 960px;
-  left: 100px;
-}
-
-#state-name{
-  font-family: "HelveticaNeue-Bold";
-  font-size: 40px;
-  color: #333333;
-}
-
-#percap-shootings{
-  font-family: "HelveticaNeue-Bold";
+#sidebar-title{
+  font-family: "Rockwell", "Times New Roman", serif;
   font-size: 30px;
   color: #333333;
+  position:absolute;
+  top: 70px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#state-title{
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;;
+  font-size: 30px;
+  color: #333333;
+  position:absolute;
+  top: 160px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#percap-title{
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;;
+  font-size: 20px;
+  color: #333333;
+  position:absolute;
+  top: 205px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #map-container-circles {
   position: absolute;
-  top: 620px;
+  top: 690px;
 }
 
 #state-container-2 {
   position:absolute;
-  top: 1100px;
+  top: 1170px;
   height: 100px;
   width: 960px;
   left: 100px;
@@ -82,7 +102,7 @@
 
 #total-container{
   position:absolute;
-  top: 1155px;
+  top: 1225px;
   height: 100px;
   width: 960px;
   left: 100px;
@@ -133,16 +153,12 @@ circle:hover {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 <div id="title-container">
-  <h1 id="page-title">Police Involved Shootings Per Million</h1>
-  <h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
+  <h1 id="page-title">Police Involved Shootings in the United States</h1><h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
 </div>
 <div id="map-container"></div>
-<div id="state-container">
-  <h1 id="state-name">New Mexico</h1>
-</div>
-<div id="percap-container">
-  <h1 id="percap-shootings">17.26 shootings per million</h1>
-</div>
+<h1 id="sidebar-title">Shootings per <br> Million by State</h1>
+<h1 id="state-title">New Mexico</h1>
+<h1 id="percap-title">17.26 shootings per million</h1>
 <div id="map-container-circles"></div>
 <div id="title-container-2">
   <h1 id="page-title-3">Police Involved Shootings (Raw Count)</h1>
@@ -217,13 +233,13 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("d", path)
       .on("mouseover", function(e){
 
-          d3.select("#state-name")
+          d3.select("#state-title")
             .data(dataset)
             .text(function(){
               return e.properties.NAME;
             });
 
-          d3.select("#percap-shootings")
+          d3.select("#percap-title")
             .data(dataset)
             .text(function(){
               return e.properties.per_mil + ' shootings per million';
