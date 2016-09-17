@@ -3,7 +3,7 @@
 <style>
 
 #title-container {
-  left: 960px;
+  left: 900px;
   width: 350px;
   height: 300px;
   position: absolute;
@@ -17,16 +17,87 @@
 }
 
 #page-title-2 {
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, sans-serif;
   font-size: 20px;
-  color: #e1e1e1;
+  color: #999;
   position: absolute;
   top: 90px;
 }
 
-#map-container {
+#title-container-2 {
+  left: 900px;
+  width: 350px;
+  height: 300px;
   position: absolute;
-  left: 50px;
+  top: 620px;
+}
+
+#page-title-3{
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 30px;
+  color: black;
+  position: absolute;
+}
+
+#state-container{
+  position:absolute;
+  top: 500px;
+  height: 100px;
+  width: 960px;
+  left: 100px;
+}
+
+#percap-container{
+  position:absolute;
+  top: 555px;
+  height: 100px;
+  width: 960px;
+  left: 100px;
+}
+
+#state-name{
+  font-family: "HelveticaNeue-Bold";
+  font-size: 40px;
+  color: #333333;
+}
+
+#percap-shootings{
+  font-family: "HelveticaNeue-Bold";
+  font-size: 30px;
+  color: #333333;
+}
+
+#map-container-circles {
+  position: absolute;
+  top: 620px;
+}
+
+#state-container-2 {
+  position:absolute;
+  top: 1100px;
+  height: 100px;
+  width: 960px;
+  left: 100px;
+}
+
+#total-container{
+  position:absolute;
+  top: 1155px;
+  height: 100px;
+  width: 960px;
+  left: 100px;
+}
+
+#state-name-2 {
+  font-family: "HelveticaNeue-Bold";
+  font-size: 40px;
+  color: #333333;
+}
+
+#total-shootings {
+  font-family: "HelveticaNeue-Bold";
+  font-size: 30px;
+  color: #333333;
 }
 
 .states {
@@ -36,10 +107,23 @@
   stroke-width: 0.5;
 }
 
+.states-invisible {
+  fill: none;
+  stroke: none;
+}
+
 .state-labels {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 12px;
-  color: white;
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 8px;
+  color: #fff;
+}
+
+path:hover {
+	fill-opacity: .7;
+}
+
+circle:hover {
+  fill-opacity: 1;
 }
 
 </style>
@@ -49,10 +133,26 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 <div id="title-container">
-  <h1 id="page-title">Police Involved Shootings Per Capita</h1>
+  <h1 id="page-title">Police Involved Shootings Per Million</h1>
   <h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
 </div>
 <div id="map-container"></div>
+<div id="state-container">
+  <h1 id="state-name">New Mexico</h1>
+</div>
+<div id="percap-container">
+  <h1 id="percap-shootings">17.26 shootings per million</h1>
+</div>
+<div id="map-container-circles"></div>
+<div id="title-container-2">
+  <h1 id="page-title-3">Police Involved Shootings (Raw Count)</h1>
+</div>
+<div id="state-container-2">
+  <h1 id="state-name-2">California</h1>
+</div>
+<div id="total-container">
+  <h1 id="total-shootings">285 shootings</h1>
+</div>
 
 <script>
 
@@ -114,30 +214,81 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("fill", function(d) {
         return quantize(d.properties.per_mil);
       })
-      .attr("d", path);
+      .attr("d", path)
+      .on("mouseover", function(e){
+
+          d3.select("#state-name")
+            .data(dataset)
+            .text(function(){
+              return e.properties.NAME;
+            });
+
+          d3.select("#percap-shootings")
+            .data(dataset)
+            .text(function(){
+              return e.properties.per_mil + ' shootings per million';
+            });
+
+      });
 
   svg.append("path")
       .datum(dataset)
       .attr("d", path);
 
-  svg.selectAll(".state-labels")
-      .data(dataset)
-      .enter()
-      .append("text")
-      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
-      .attr("font-size", "8px")
-      .attr("color", function(d){
-        return "#fff";
-      })
-      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .text(function(d){
-        return d.properties.STUSPS;
-      });
-
 });
 
 // position the svg
 $("svg").css({left: "25%"});
+
+// create a second svg for graduated circles
+var svgCircles = d3.select("#map-container-circles").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// load the data
+d3.json("usa.geojson", function(error, usa) {
+  if (error) return console.error(error);
+  console.log(usa);
+  dataset = usa.features;
+
+  svgCircles.append("g")
+      .attr("class", "states-invisible")
+      .selectAll("circle")
+      .data(dataset)
+      .enter()
+      .append("circle")
+      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+      .attr("r", function(d){ return 125 * Math.sqrt(d.properties.shootings)/Math.sqrt(285)})
+      .attr("stroke", "white")
+      .attr("stroke-width", 0.5)
+      .attr("fill", "#B24739")
+      .attr("fill-opacity", 0.5)
+      .on("mouseover", function(e){
+
+          d3.select("#state-name-2")
+            .data(dataset)
+            .text(function(){
+              return e.properties.NAME;
+            });
+
+          d3.select("#total-shootings")
+            .data(dataset)
+            .text(function(){
+              return e.properties.shootings + ' shootings';
+            });
+        })
+
+  // now add some labels
+  svgCircles.append("g")
+      .selectAll("text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+      .attr("class", "state-labels")
+      .text(function(d){ return d.properties.STUSPS });
+
+});
 
 
 
