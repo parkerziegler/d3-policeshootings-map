@@ -101,9 +101,9 @@
   white-space: nowrap;
 }
 
-#percap-bars {
+#percap-table {
   position: absolute;
-  top: 400px;
+  top: 430px;
   left: 900px;
 }
 
@@ -166,11 +166,29 @@ circle:hover {
   fill-opacity: 1;
 }
 
+th { text-align: left; }
+th, td {
+  padding: 0 1em 0.5ex 0;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  font-size: 12px;
+}
+th.center, td.center {
+  text-align: center;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  font-size: 12px;
+}
+th.num, td.num {
+  text-align: right;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  font-size: 12px;
+}
+
 </style>
 <body>
 <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script src="Javascripts/barHighest.js"></script>
 
 <div id="title-container">
   <h1 id="page-title">Police Involved Shootings in the United States</h1><h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
@@ -180,7 +198,7 @@ circle:hover {
 <p id="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
 <h1 id="state-title">New Mexico</h1>
 <h1 id="percap-title">17.26 shootings per million</h1>
-<div id="percap-bars"></div>
+<div id="percap-table"></div>
 <div id="map-container-circles"></div>
 <div id="title-container-2">
   <h1 id="page-title-3">Police Involved Shootings (Raw Count)</h1>
@@ -214,16 +232,6 @@ var dataset;
 var svg = d3.select("#map-container").append("svg")
     .attr("width", width)
     .attr("height", height);
-
-// set the height and width of the bar chart svg
-var margin = {top: 35, right: 35, bottom: 35, left: 35},
-    wBar = 300 - margin.left - margin.right,
-    hBar = 370 - margin.top - margin.bottom;
-
-// create the bar chart svg
-var svgBar = d3.select("#percap-bars").append("svg")
-    .attr("width", wBar)
-    .attr("height", hBar);
 
 // create a function to assign fill color based on values
 var quantize = function(d){
@@ -283,33 +291,61 @@ d3.json("usa.geojson", function(error, usa) {
       .datum(dataset)
       .attr("d", path);
 
-// now for the bar chat; start with defining the scales
-var xScale = d3.scaleLinear()
-                    .domain([0, d3.max(dataset, function(d){
-                        return d.properties.per_mil;
-                    })])
-                    .range([0, wBar]);
-
-var yScale = d3.scaleOrdinal()
-              .domain(d3.range(dataset.length))
-              .range([0, hBar]);
-
-// now create the bar chart
-svgBar.selectAll("rect")
-  .data(dataset)
-  .enter()
-  .append("rect")
-  .attr("x", margin.left)
-  .attr("y", function(d, i) {
-    return yScale(i) + margin.top/2;
-  })
-  .attr("width", function(d){
-    return xScale(d.properties.per_mil);
-  })
-  .attr("height", yScale)
-  .attr("fill", "black");
-
 });
+
+// create a table for the highest and lowest state data
+// load the data
+
+// column definitions
+var columns = [
+    { head: 'State', cl: 'title', html: function(row){return r.state;} },
+    { head: 'Shootings per Million', cl: 'num', html: function(row){return r.per_mil;} }
+  ];
+
+// data definitions
+var highest = [
+  {state: "New Mexico", per_mil: 17.26},
+  {state: "District of Columbia", per_mil: 15.18},
+  {state: "Wyoming", per_mil: 13.70},
+  {state: "Oklahoma", per_mil: 12.89},
+  {state: "Alaska", per_mil: 12.22}
+]
+
+// get the table selection
+var table = d3.select("#percap-table").append("table")
+
+// add the columns
+table.append('thead')
+   .append('tr')
+   .selectAll('th')
+   .data(columns)
+   .enter()
+   .append('th')
+   .attr('class', function(d){ return d.cl; })
+   .text(function(d){ return d.head });
+
+// add the body
+// create table body
+table.append('tbody')
+    .selectAll('tr')
+    .data(highest)
+    .enter()
+    .append('tr')
+    .selectAll('td')
+    .data(function(row, i) {
+        return columns.map(function(c) {
+            // compute cell values for this specific row
+            var cell = {};
+            d3.keys(c).forEach(function(k) {
+                cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
+            });
+            return cell;
+        });
+    })
+    .enter()
+    .append('td')
+    .html(function(d){ return d.html; })
+    .attr('class', function(d){ return d.cl; });
 
 // create a second svg for graduated circles
 var svgCircles = d3.select("#map-container-circles").append("svg")
