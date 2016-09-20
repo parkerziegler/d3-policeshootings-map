@@ -12,6 +12,7 @@
   padding-bottom: 15px;
   overflow: hidden;
   white-space: nowrap;
+  z-index: 9000;
 }
 
 #page-title-2 {
@@ -24,6 +25,7 @@
   padding-bottom: 15px;
   overflow: hidden;
   white-space: nowrap;
+  z-index: 9000;
 }
 
 #page-title-3{
@@ -39,6 +41,7 @@
   position: fixed;
   background-color: #FFE800;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  z-index: 9000;
 }
 
 #title-container-2 {
@@ -55,7 +58,7 @@
 }
 
 #sidebar-title{
-  font-family: "Rockwell", "Times New Roman", serif;
+  font-family: "Gill Sans MT", Helvetica, sans-serif;;
   font-size: 30px;
   color: #333333;
   position:absolute;
@@ -70,7 +73,7 @@
   font-size: 30px;
   color: #333333;
   position:absolute;
-  top: 160px;
+  top: 330px;
   left: 900px;
   overflow: hidden;
   white-space: nowrap;
@@ -79,12 +82,29 @@
 #percap-title{
   font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;;
   font-size: 20px;
-  color: #333333;
+  color: #666;
   position:absolute;
-  top: 205px;
+  top: 375px;
   left: 900px;
   overflow: hidden;
   white-space: nowrap;
+}
+
+#description{
+  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
+  font-size: 14px;
+  color: #333;
+  position: absolute;
+  top: 160px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#percap-bars {
+  position: absolute;
+  top: 400px;
+  left: 900px;
 }
 
 #map-container-circles {
@@ -157,8 +177,10 @@ circle:hover {
 </div>
 <div id="map-container"></div>
 <h1 id="sidebar-title">Shootings per <br> Million by State</h1>
+<p id="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
 <h1 id="state-title">New Mexico</h1>
 <h1 id="percap-title">17.26 shootings per million</h1>
+<div id="percap-bars"></div>
 <div id="map-container-circles"></div>
 <div id="title-container-2">
   <h1 id="page-title-3">Police Involved Shootings (Raw Count)</h1>
@@ -172,7 +194,7 @@ circle:hover {
 
 <script>
 
-// set the height and width of the svg
+// set the height and width of the map svg
 var width = 960,
     height = 500;
 
@@ -188,10 +210,20 @@ var path = d3.geoPath()
 // create an empty dataset variable
 var dataset;
 
-// append the svg
+// append the main map svg
 var svg = d3.select("#map-container").append("svg")
     .attr("width", width)
     .attr("height", height);
+
+// set the height and width of the bar chart svg
+var margin = {top: 35, right: 35, bottom: 35, left: 35},
+    wBar = 300 - margin.left - margin.right,
+    hBar = 370 - margin.top - margin.bottom;
+
+// create the bar chart svg
+var svgBar = d3.select("#percap-bars").append("svg")
+    .attr("width", wBar)
+    .attr("height", hBar);
 
 // create a function to assign fill color based on values
 var quantize = function(d){
@@ -251,10 +283,33 @@ d3.json("usa.geojson", function(error, usa) {
       .datum(dataset)
       .attr("d", path);
 
-});
+// now for the bar chat; start with defining the scales
+var xScale = d3.scaleLinear()
+                    .domain([0, d3.max(dataset, function(d){
+                        return d.properties.per_mil;
+                    })])
+                    .range([0, wBar]);
 
-// position the svg
-$("svg").css({left: "25%"});
+var yScale = d3.scaleOrdinal()
+              .domain(d3.range(dataset.length))
+              .range([0, hBar]);
+
+// now create the bar chart
+svgBar.selectAll("rect")
+  .data(dataset)
+  .enter()
+  .append("rect")
+  .attr("x", margin.left)
+  .attr("y", function(d, i) {
+    return yScale(i) + margin.top/2;
+  })
+  .attr("width", function(d){
+    return xScale(d.properties.per_mil);
+  })
+  .attr("height", yScale)
+  .attr("fill", "black");
+
+});
 
 // create a second svg for graduated circles
 var svgCircles = d3.select("#map-container-circles").append("svg")
@@ -274,7 +329,7 @@ d3.json("usa.geojson", function(error, usa) {
       .enter()
       .append("circle")
       .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .attr("r", function(d){ return 125 * Math.sqrt(d.properties.shootings)/Math.sqrt(285)})
+      .attr("r", function(d){ return 100 * Math.sqrt(d.properties.shootings)/Math.sqrt(285)})
       .attr("stroke", "white")
       .attr("stroke-width", 0.5)
       .attr("fill", "#B24739")
