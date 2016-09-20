@@ -101,9 +101,15 @@
   white-space: nowrap;
 }
 
-#percap-table {
+#highest-lowest {
   position: absolute;
   top: 430px;
+  left: 900px;
+}
+
+#percap-table {
+  position: absolute;
+  top: 470px;
   left: 900px;
 }
 
@@ -166,29 +172,47 @@ circle:hover {
   fill-opacity: 1;
 }
 
-th { text-align: left; }
-th, td {
+.button-left{
+  background: white;
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  color: rgb(158,202,225);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  border: 2px solid rgb(158,202,225);
+  width: 100px;
+}
+
+.button-right{
+  background: white;
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  color: rgb(158,202,225);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border: 2px solid rgb(158,202,225);
+  width: 100px;
+}
+
+th {
+  text-align: left;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
   padding: 0 1em 0.5ex 0;
+  font-size: 16px;
+ }
+td {
+  text-align: left;
+  padding: 0 1em 1ex 0;
   font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
   font-size: 12px;
 }
-th.center, td.center {
-  text-align: center;
-  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
-  font-size: 12px;
-}
-th.num, td.num {
-  text-align: right;
-  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
-  font-size: 12px;
-}
+
 
 </style>
 <body>
 <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="Javascripts/barHighest.js"></script>
 
 <div id="title-container">
   <h1 id="page-title">Police Involved Shootings in the United States</h1><h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
@@ -198,6 +222,10 @@ th.num, td.num {
 <p id="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
 <h1 id="state-title">New Mexico</h1>
 <h1 id="percap-title">17.26 shootings per million</h1>
+<div id="highest-lowest">
+  <button class="button-left">Highest</button>
+  <button class="button-right">Lowest</button>
+</div>
 <div id="percap-table"></div>
 <div id="map-container-circles"></div>
 <div id="title-container-2">
@@ -294,58 +322,51 @@ d3.json("usa.geojson", function(error, usa) {
 });
 
 // create a table for the highest and lowest state data
-// load the data
-
-// column definitions
-var columns = [
-    { head: 'State', cl: 'title', html: function(row){return r.state;} },
-    { head: 'Shootings per Million', cl: 'num', html: function(row){return r.per_mil;} }
-  ];
-
 // data definitions
 var highest = [
-  {state: "New Mexico", per_mil: 17.26},
-  {state: "District of Columbia", per_mil: 15.18},
-  {state: "Wyoming", per_mil: 13.70},
-  {state: "Oklahoma", per_mil: 12.89},
-  {state: "Alaska", per_mil: 12.22}
+  {"State": "New Mexico", "Shootings Per Million": 17.26},
+  {"State": "District of Columbia", "Shootings Per Million": 15.18},
+  {"State": "Wyoming", "Shootings Per Million": 13.70},
+  {"State": "Oklahoma", "Shootings Per Million": 12.89},
+  {"State": "Alaska", "Shootings Per Million": 12.22}
 ]
 
 // get the table selection
-var table = d3.select("#percap-table").append("table")
+function tabulate(highest, columns){
+  var table = d3.select("#percap-table").append("table")
+  var thead = table.append('thead')
+  var tbody = table.append('tbody');
 
-// add the columns
-table.append('thead')
-   .append('tr')
-   .selectAll('th')
-   .data(columns)
+// add the header row
+   thead.append('tr')
+      .selectAll('th')
+      .data(columns)
+      .enter()
+      .append('th')
+      .text(function(column){ return column; });
+
+// create a row for each object in the dataset
+    var rows = tbody.selectAll('tr')
+      .data(highest)
+      .enter()
+      .append('tr');
+
+// create a cell in each row for each columns
+var cells = rows.selectAll('td')
+   .data(function(row){
+     return columns.map(function(column){
+       return {column: column, value: row[column]};
+     });
+   })
    .enter()
-   .append('th')
-   .attr('class', function(d){ return d.cl; })
-   .text(function(d){ return d.head });
+   .append('td')
+   .text(function(d){ return d.value; });
 
-// add the body
-// create table body
-table.append('tbody')
-    .selectAll('tr')
-    .data(highest)
-    .enter()
-    .append('tr')
-    .selectAll('td')
-    .data(function(row, i) {
-        return columns.map(function(c) {
-            // compute cell values for this specific row
-            var cell = {};
-            d3.keys(c).forEach(function(k) {
-                cell[k] = typeof c[k] == 'function' ? c[k](row,i) : c[k];
-            });
-            return cell;
-        });
-    })
-    .enter()
-    .append('td')
-    .html(function(d){ return d.html; })
-    .attr('class', function(d){ return d.cl; });
+   return table;
+}
+
+// render the table
+tabulate(highest, ['State', 'Shootings Per Million']);
 
 // create a second svg for graduated circles
 var svgCircles = d3.select("#map-container-circles").append("svg")
