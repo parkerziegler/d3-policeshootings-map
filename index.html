@@ -28,11 +28,15 @@
   z-index: 9000;
 }
 
-#page-title-3{
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+#sidebar-title-2{
+  font-family: "Gill Sans MT", Helvetica, sans-serif;;
   font-size: 30px;
-  color: black;
-  position: absolute;
+  color: #333333;
+  position:absolute;
+  top: 690px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #title-container {
@@ -96,6 +100,17 @@
   color: #333;
   position: absolute;
   top: 160px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#description-2{
+  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
+  font-size: 14px;
+  color: #333;
+  position: absolute;
+  top: 780px;
   left: 900px;
   overflow: hidden;
   white-space: nowrap;
@@ -174,11 +189,9 @@ circle:hover {
   fill-opacity: 1;
 }
 
-.button-left{
-  background: white;
+#button-left{
   font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
   font-size: 14px;
-  color: rgb(66,146,198);
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
   border: 2px solid rgb(158,202,225);
@@ -187,11 +200,9 @@ circle:hover {
   white-space: nowrap;
 }
 
-.button-right{
-  background: white;
+#button-right{
   font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
   font-size: 14px;
-  color: rgb(66,146,198);
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   border: 2px solid rgb(158,202,225);
@@ -200,39 +211,36 @@ circle:hover {
   white-space: nowrap;
 }
 
-.button-left:hover {
+#button-left:hover {
   color: #fff;
   background: rgb(66,146,198);
 }
 
-.button-right:hover {
+#button-right:hover {
   color: #fff;
   background: rgb(66,146,198);
 }
 
-.button-left:focus {
+#button-left:focus {
   color: #fff;
   background: rgb(66,146,198);
   outline: 0;
 }
 
-.button-right:focus {
+#button-right:focus {
   color: #fff;
   background: rgb(66,146,198);
   outline: 0;
 }
 
 .button-active {
+  color: #fff;
   background: rgb(66,146,198);
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
-  font-size: 14px;
-  color: white;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: 2px solid rgb(158,202,225);
-  width: 100px;
-  overflow: hidden;
-  white-space: nowrap;
+}
+
+.button-inactive {
+  color: rgb(66,146,198);
+  background: #fff;
 }
 
 th {
@@ -268,14 +276,13 @@ td {
 <h1 id="state-title">New Mexico</h1>
 <h1 id="percap-title">17.26 shootings per million</h1>
 <div id="highest-lowest">
-  <button class="button-left">Highest</button>
-  <button class="button-right">Lowest</button>
+  <button id="button-left" class="button-active">Highest</button>
+  <button id="button-right" class="button-inactive">Lowest</button>
 </div>
 <div id="percap-table"></div>
 <div id="map-container-circles"></div>
-<div id="title-container-2">
-  <h1 id="page-title-3">Police Involved Shootings (Raw Count)</h1>
-</div>
+<h1 id="sidebar-title-2">Shootings (Raw Count) <br> by State</h1>
+<p id="description-2">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br>In general, states with greater populations had more <br>shootings. However,</p>
 <div id="state-container-2">
   <h1 id="state-name-2">California</h1>
 </div>
@@ -305,10 +312,6 @@ var dataset;
 var svg = d3.select("#map-container").append("svg")
     .attr("width", width)
     .attr("height", height);
-
-// make the active button active with jQuery
-$(".button-left").css('background', 'rgb(66,146,198)')
-$(".button-left").css('color', 'white')
 
 // create a function to assign fill color based on values
 var quantize = function(d){
@@ -426,7 +429,10 @@ function tabulate(highest, columns){
 tabulate(highest, ['State', 'Shootings Per Million']);
 
 // transition the table on button click
-d3.select(".button-right").on("click", function(){
+d3.select("#button-right").on("click", function(){
+
+  $("#button-left").removeClass('button-active').addClass('button-inactive')
+
 
   var tbody = d3.selectAll('tbody');
   var columns = ['State', 'Shootings Per Million'];
@@ -446,7 +452,9 @@ d3.select(".button-right").on("click", function(){
 
 })
 
-d3.select(".button-left").on("click", function(){
+d3.select("#button-left").on("click", function(){
+
+  $("#button-right").removeClass('button-active').addClass('button-inactive')
 
   var tbody = d3.selectAll('tbody');
   var columns = ['State', 'Shootings Per Million'];
@@ -485,7 +493,7 @@ d3.json("usa.geojson", function(error, usa) {
       .enter()
       .append("circle")
       .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .attr("r", function(d){ return 100 * Math.sqrt(d.properties.shootings)/Math.sqrt(285)})
+      .attr("r", function(d){ return 80 * Math.sqrt(d.properties.shootings)/Math.sqrt(285)})
       .attr("stroke", "white")
       .attr("stroke-width", 0.5)
       .attr("fill", "#B24739")
