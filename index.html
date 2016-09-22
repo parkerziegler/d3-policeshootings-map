@@ -246,7 +246,7 @@ circle:hover {
 #scatterplot {
   position: absolute;
   left: 900px;
-  top: 1000px;
+  top: 1050px;
 }
 
 .button-active {
@@ -541,7 +541,7 @@ d3.json("usa.geojson", function(error, usa) {
       // set svg dimensions
       var margin = {top: 35, right: 35, bottom: 35, left: 35},
           wScatter = 370 - margin.left - margin.right,
-          hScatter = 300 - margin.top - margin.bottom;
+          hScatter = 250 - margin.top - margin.bottom;
 
       // set up the scales
       var xScale = d3.scaleLinear()
@@ -558,8 +558,8 @@ d3.json("usa.geojson", function(error, usa) {
 
       // define the scatterplot svg
       var svgScatter = d3.select('#scatterplot').append("svg")
-                         .attr("width", wScatter)
-                         .attr("height", hScatter)
+                         .attr("width", wScatter + margin.left + margin.right)
+                         .attr("height", hScatter + margin.top + margin.bottom)
                          .append("g")
                          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -580,60 +580,21 @@ d3.json("usa.geojson", function(error, usa) {
                 .attr("fill", "#B24739")
                 .attr("opacity", 0.5);
 
-                // create axes
-                var xAxis = svgScatter.append("g")
-                                      .attr("transform", "translate(0," + hScatter + ")")
-                                      .call(d3.axisBottom(xScale));
+      // create axes
 
-                var yAxis = svgScatter.append("g")
-                                      .call(d3.axisLeft(yScale));
+      var x = d3.axisBottom(xScale)
+                .ticks(5)
 
-                // append the x axis to the svg
-                svg.append("g")
-                      .attr("class", "x axis")
-                      .attr("transform", "translate(0," + h + ")")
-                      .call(xAxis);
+      var y = d3.axisLeft(yScale)
+                .ticks(5)
 
-                // append a label to the x axis
-                svg.append("text")
-                      .attr("id", "xlabel")
-                      .text("Population Density")
-                      .style("text-anchor", "middle")
-                      .attr("fill", "white")
-                      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
-                      .attr("font-size", "10px")
-                      .attr("x", w/2)
-                      .attr("y", h + margin.bottom - 5);
+      var xAxis = svgScatter.append("g")
+                            .attr("transform", "translate(0," + hScatter + ")")
+                            .call(x);
 
-                // append the y axis to the svg
-                svg.append("g")
-                      .attr("class", "y axis")
-                      .attr("transform", "translate(0,0)")
-                      .call(yAxis);
+      var yAxis = svgScatter.append("g")
+                            .call(y);
 
-                // append a label to the y axis
-                svg.append("text")
-                      .text("Crashes per Sq. Mi.")
-                      .style("text-anchor", "middle")
-                      .attr("fill", "white")
-                      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
-                      .attr("font-size", "10px")
-                      .attr("x", -80)
-                      .attr("y", -10)
-                      .attr("transform", "rotate(-90)");
-
-                // append a title
-                svg.append("text")
-                  .attr("id", "sctitle")
-                  .attr("x", (w / 2))
-                  .attr("y", 0 - (margin.top / 2))
-                  .attr("text-anchor", "middle")
-                  .attr("font-size", "12px")
-                  .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
-                  .attr("fill", "white")
-                  .text("Relating Population Density and Crash Density");
-
-      //
 
 });
 
