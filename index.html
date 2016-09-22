@@ -73,7 +73,7 @@
 }
 
 #state-title{
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;;
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
   font-size: 30px;
   color: #333333;
   position:absolute;
@@ -84,7 +84,7 @@
 }
 
 #percap-title{
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;;
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
   font-size: 20px;
   color: #666;
   position:absolute;
@@ -152,15 +152,25 @@
 }
 
 #state-name-2 {
-  font-family: "HelveticaNeue-Bold";
-  font-size: 40px;
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 30px;
   color: #333333;
+  position:absolute;
+  top: 1000px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 #total-shootings {
-  font-family: "HelveticaNeue-Bold";
-  font-size: 30px;
-  color: #333333;
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 20px;
+  color: #666;
+  position:absolute;
+  top: 1045px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .states {
@@ -233,6 +243,12 @@ circle:hover {
   outline: 0;
 }
 
+#scatterplot {
+  position: absolute;
+  left: 900px;
+  top: 1000px;
+}
+
 .button-active {
   color: #fff;
   background: rgb(66,146,198);
@@ -282,13 +298,10 @@ td {
 <div id="percap-table"></div>
 <div id="map-container-circles"></div>
 <h1 id="sidebar-title-2">Shootings (Raw Count) <br> by State</h1>
-<p id="description-2">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br>In general, states with greater populations had more <br>shootings. However,</p>
-<div id="state-container-2">
-  <h1 id="state-name-2">California</h1>
-</div>
-<div id="total-container">
-  <h1 id="total-shootings">285 shootings</h1>
-</div>
+<p id="description-2">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br>In general, states with greater populations had more <br>shootings.</p>
+<h1 id="state-name-2">California</h1>
+<h1 id="total-shootings">285 shootings</h1>
+<div id="scatterplot"></div>
 
 <script>
 
@@ -523,7 +536,110 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("class", "state-labels")
       .text(function(d){ return d.properties.STUSPS });
 
+      // create a scatterplot to visualize the data
+
+      // set svg dimensions
+      var margin = {top: 35, right: 35, bottom: 35, left: 35},
+          wScatter = 370 - margin.left - margin.right,
+          hScatter = 300 - margin.top - margin.bottom;
+
+      // set up the scales
+      var xScale = d3.scaleLinear()
+              .domain([0, d3.max(dataset, function(d){
+                  return d.properties.total_pop;
+              })])
+              .range([0, wScatter]);
+
+      var yScale = d3.scaleLinear()
+              .domain([0, d3.max(dataset, function(d){
+                        return d.properties.shootings;
+              })])
+              .range([hScatter, 0]);
+
+      // define the scatterplot svg
+      var svgScatter = d3.select('#scatterplot').append("svg")
+                         .attr("width", wScatter)
+                         .attr("height", hScatter)
+                         .append("g")
+                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // make the scatterplot
+      svgScatter.selectAll("circle")
+                .data(dataset)
+                .enter()
+                .append("circle")
+                .attr("cx", function(d){
+                return xScale(d.properties.total_pop);
+                })
+                .attr("cy", function(d){
+                return yScale(d.properties.shootings);
+                })
+                .attr("r", function(d){
+                return 4;
+                })
+                .attr("fill", "#B24739")
+                .attr("opacity", 0.5);
+
+                // create axes
+                var xAxis = svgScatter.append("g")
+                                      .attr("transform", "translate(0," + hScatter + ")")
+                                      .call(d3.axisBottom(xScale));
+
+                var yAxis = svgScatter.append("g")
+                                      .call(d3.axisLeft(yScale));
+
+                // append the x axis to the svg
+                svg.append("g")
+                      .attr("class", "x axis")
+                      .attr("transform", "translate(0," + h + ")")
+                      .call(xAxis);
+
+                // append a label to the x axis
+                svg.append("text")
+                      .attr("id", "xlabel")
+                      .text("Population Density")
+                      .style("text-anchor", "middle")
+                      .attr("fill", "white")
+                      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
+                      .attr("font-size", "10px")
+                      .attr("x", w/2)
+                      .attr("y", h + margin.bottom - 5);
+
+                // append the y axis to the svg
+                svg.append("g")
+                      .attr("class", "y axis")
+                      .attr("transform", "translate(0,0)")
+                      .call(yAxis);
+
+                // append a label to the y axis
+                svg.append("text")
+                      .text("Crashes per Sq. Mi.")
+                      .style("text-anchor", "middle")
+                      .attr("fill", "white")
+                      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
+                      .attr("font-size", "10px")
+                      .attr("x", -80)
+                      .attr("y", -10)
+                      .attr("transform", "rotate(-90)");
+
+                // append a title
+                svg.append("text")
+                  .attr("id", "sctitle")
+                  .attr("x", (w / 2))
+                  .attr("y", 0 - (margin.top / 2))
+                  .attr("text-anchor", "middle")
+                  .attr("font-size", "12px")
+                  .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
+                  .attr("fill", "white")
+                  .text("Relating Population Density and Crash Density");
+
+      //
+
 });
+
+
+
+
 
 
 
