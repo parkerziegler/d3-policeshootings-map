@@ -124,6 +124,14 @@
   white-space: nowrap;
 }
 
+#highest-lowest-2 {
+  position: absolute;
+  top: 1050px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 #percap-table {
   position: absolute;
   top: 470px;
@@ -245,8 +253,52 @@ circle:hover {
 
 #total-table {
   position: absolute;
-  top: 850px;
+  top: 1100px;
   left: 900px;
+}
+
+#button-left-2{
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 2px solid #FF8778;
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-right-2{
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 2px solid #FF8778;
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-left-2:hover {
+  color: #fff;
+  background: #B24739;
+}
+
+#button-right-2:hover {
+  color: #fff;
+  background: #B24739;
+}
+
+#button-left-2:focus {
+  color: #fff;
+  background: #B24739;
+  outline: 0;
+}
+
+#button-right-2:focus {
+  color: #fff;
+  background: #B24739;
+  outline: 0;
 }
 
 #scatterplot {
@@ -265,6 +317,16 @@ circle:hover {
   background: #fff;
 }
 
+.button-active-2 {
+  color: #fff;
+  background: #B24739;
+}
+
+.button-inactive-2 {
+  color: #B24739;
+  background: #fff;
+}
+
 th {
   text-align: left;
   font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
@@ -273,6 +335,7 @@ th {
   overflow: hidden;
   white-space: nowrap;
  }
+
 td {
   text-align: left;
   padding: 0 2em 1ex 0;
@@ -282,6 +345,28 @@ td {
   white-space: nowrap;
 }
 
+th {
+  text-align: left;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  padding: 0 2em 0.5ex 0;
+  font-size: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+ }
+
+td {
+  text-align: left;
+  padding: 0 2em 1ex 0;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.th-percap{}
+.td-percap{}
+.th-total{}
+.td-total{}
 
 </style>
 <body>
@@ -308,6 +393,10 @@ td {
 <h1 id="state-name-2">California</h1>
 <h1 id="total-shootings">285 shootings</h1>
 <div id="total-table"></div>
+<div id="highest-lowest-2">
+  <button id="button-left-2" class="button-active-2">Highest</button>
+  <button id="button-right-2" class="button-inactive-2">Lowest</button>
+</div>
 <div id="scatterplot"></div>
 
 <script>
@@ -423,7 +512,8 @@ function tabulate(highest, columns){
       .data(columns)
       .enter()
       .append('th')
-      .text(function(column){ return column; });
+      .text(function(column){ return column; })
+      .attr("class", "th-percap");
 
 // create a row for each object in the dataset
     var rows = tbody.selectAll('tr')
@@ -440,7 +530,8 @@ function tabulate(highest, columns){
      })
      .enter()
      .append('td')
-     .text(function(d){ return d.value; });
+     .text(function(d){ return d.value; })
+     .attr("class", "tr-percap");
 
      return table;
 }
@@ -453,7 +544,7 @@ d3.select("#button-right").on("click", function(){
 
   $("#button-left").removeClass('button-active').addClass('button-inactive')
 
-  var tbody = d3.selectAll('tbody');
+  var tbody = d3.select('#percap-table').selectAll('tbody');
   var columns = ['State', 'Shootings Per Million'];
 
   tbody.selectAll("tr")
@@ -475,7 +566,7 @@ d3.select("#button-left").on("click", function(){
 
   $("#button-right").removeClass('button-active').addClass('button-inactive')
 
-  var tbody = d3.selectAll('tbody');
+  var tbody = d3.select('#percap-table').selectAll('tbody');
   var columns = ['State', 'Shootings Per Million'];
 
   tbody.selectAll("tr")
@@ -656,6 +747,51 @@ function tabulateRaw(highestRaw, columns){
 }
 
 tabulateRaw(highestRaw, ['State', 'Number of Shootings']);
+
+// change the table on button click
+d3.select("#button-right-2").on("click", function(){
+
+  $("#button-left-2").removeClass('button-active-2').addClass('button-inactive-2')
+
+  var tbody = d3.select('#total-table').selectAll('tbody');
+  var columns = ['State', 'Number of Shootings'];
+
+  tbody.selectAll("tr")
+    .data(lowest)
+    .selectAll("td")
+    .data(function(row){
+      return columns.map(function(column){
+        return {
+          column: column,
+          value: row[column]
+        };
+      });
+    })
+    .text(function(d){ return d.value; });
+
+})
+
+d3.select("#button-left-2").on("click", function(){
+
+  $("#button-right-2").removeClass('button-active-2').addClass('button-inactive-2')
+
+  var tbody = d3.select('#total-table').selectAll('tbody');
+  var columns = ['State', 'Number of Shootings'];
+
+  tbody.selectAll("tr")
+    .data(highest)
+    .selectAll("td")
+    .data(function(row){
+      return columns.map(function(column){
+        return {
+          column: column,
+          value: row[column]
+        };
+      });
+    })
+    .text(function(d){ return d.value; });
+
+})
 
 
 
