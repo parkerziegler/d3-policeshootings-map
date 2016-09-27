@@ -61,6 +61,12 @@
   position: absolute;
 }
 
+#legend-container{
+  top: 520px;
+  left: 530px;
+  position: absolute;
+}
+
 #sidebar-title{
   font-family: "Gill Sans MT", Helvetica, sans-serif;;
   font-size: 30px;
@@ -380,6 +386,7 @@ td {
   <h1 id="page-title">Police Involved Shootings in the United States</h1><h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
 </div>
 <div id="map-container"></div>
+<div id="legend-container"></div>
 <h1 id="sidebar-title">Shootings per <br> Million by State</h1>
 <p id="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
 <h1 id="state-title">New Mexico</h1>
@@ -441,8 +448,14 @@ var quantize = function(d){
   else if(d < 10){
     return "rgb(107,174,214)";
   }
-  else {
+  else if(d < 12){
     return "rgb(66,146,198)";
+  }
+  else if(d < 15){
+    return "rgb(33,113,181)";
+  }
+  else {
+    return "rgb(8,81,156)";
   }
 };
 
@@ -483,6 +496,34 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("d", path);
 
 });
+
+// now create a legend. start by storing all color values in an array
+var colorLegend = ["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)", "rgb(33,113,181)", "rgb(8,81,156)"];
+
+// define a new legend
+var svgLegend = d3.select('#legend-container').append('svg')
+                  .attr('width', 200)
+                  .attr('height', 100);
+
+svgLegend.append("g")
+   .attr("class", "legend")
+   .selectAll("rect")
+   .data(colorLegend)
+   .enter()
+   .append("rect")
+   .attr("fill", function(d, i){ return colorLegend[i]; })
+   .attr("x", function(d, i){ return (i*20); })
+   .attr("y", 50)
+   .attr("width", 20)
+   .attr("height", 15);
+
+var titleLegend = "Shootings Per Million";
+
+// add a legend title
+svgLegend.append("p").html(titleLegend)
+  .attr("font-size", "10px")
+  .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
+  .attr("y", 45);
 
 // create a table for the highest and lowest state data
 // data definitions
