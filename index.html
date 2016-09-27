@@ -156,7 +156,7 @@
   font-size: 30px;
   color: #333333;
   position:absolute;
-  top: 1000px;
+  top: 950px;
   left: 900px;
   overflow: hidden;
   white-space: nowrap;
@@ -167,7 +167,7 @@
   font-size: 20px;
   color: #666;
   position:absolute;
-  top: 1045px;
+  top: 995px;
   left: 900px;
   overflow: hidden;
   white-space: nowrap;
@@ -243,10 +243,16 @@ circle:hover {
   outline: 0;
 }
 
+#total-table {
+  position: absolute;
+  top: 850px;
+  left: 900px;
+}
+
 #scatterplot {
   position: absolute;
-  left: 900px;
-  top: 1050px;
+  left: 0px;
+  top: 1300px;
 }
 
 .button-active {
@@ -298,9 +304,10 @@ td {
 <div id="percap-table"></div>
 <div id="map-container-circles"></div>
 <h1 id="sidebar-title-2">Shootings (Raw Count) <br> by State</h1>
-<p id="description-2">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br>In general, states with greater populations had more <br>shootings.</p>
+<p id="description-2">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br><b>Vermont</b> and <b>North Dakota</b> had the fewest shootings <br> of all states, with only <b>2</b> each. <br><br> Hover over a state to obtain the number of shootings.</p>
 <h1 id="state-name-2">California</h1>
 <h1 id="total-shootings">285 shootings</h1>
+<div id="total-table"></div>
 <div id="scatterplot"></div>
 
 <script>
@@ -441,11 +448,10 @@ function tabulate(highest, columns){
 // render the table
 tabulate(highest, ['State', 'Shootings Per Million']);
 
-// transition the table on button click
+// change the table on button click
 d3.select("#button-right").on("click", function(){
 
   $("#button-left").removeClass('button-active').addClass('button-inactive')
-
 
   var tbody = d3.selectAll('tbody');
   var columns = ['State', 'Shootings Per Million'];
@@ -595,8 +601,62 @@ d3.json("usa.geojson", function(error, usa) {
       var yAxis = svgScatter.append("g")
                             .call(y);
 
-
 });
+
+// create a table for the highest and lowest state data
+// data definitions
+var highestRaw = [
+  {"State": "California", "Number of Shootings": 285},
+  {"State": "Texas", "Number of Shootings": 163},
+  {"State": "Florida", "Number of Shootings": 110},
+  {"State": "Arizona", "Number of Shootings": 66},
+  {"State": "Georgia", "Number of Shootings": 58}
+]
+
+var lowestRaw = [
+  {"State": "Vermont", "Number of Shootings": 2},
+  {"State": "North Dakota", "Number of Shootings": 2},
+  {"State": "Maine", "Number of Shootings": 3},
+  {"State": "Rhode Island", "Number of Shootings": 3},
+  {"State": "New Hampshire", "Number of Shootings": 4}
+]
+
+// get the table selection
+function tabulateRaw(highestRaw, columns){
+  var table = d3.select("#total-table").append("table")
+  var thead = table.append('thead')
+  var tbody = table.append('tbody');
+
+// add the header row
+   thead.append('tr')
+      .selectAll('th')
+      .data(columns)
+      .enter()
+      .append('th')
+      .text(function(column){ return column; });
+
+// create a row for each object in the dataset
+    var rows = tbody.selectAll('tr')
+      .data(highestRaw)
+      .enter()
+      .append('tr');
+
+// create a cell in each row for each columns
+  var cells = rows.selectAll('td')
+     .data(function(row){
+       return columns.map(function(column){
+         return {column: column, value: row[column]};
+       });
+     })
+     .enter()
+     .append('td')
+     .text(function(d){ return d.value; });
+
+     return table;
+}
+
+tabulateRaw(highestRaw, ['State', 'Number of Shootings']);
+
 
 
 
