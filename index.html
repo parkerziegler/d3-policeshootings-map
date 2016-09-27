@@ -365,8 +365,10 @@ td {
 
 .th-percap{}
 .td-percap{}
+.tr-percap{}
 .th-total{}
 .td-total{}
+.tr-total{}
 
 </style>
 <body>
@@ -502,27 +504,28 @@ var lowest = [
 
 // get the table selection
 function tabulate(highest, columns){
-  var table = d3.select("#percap-table").append("table")
-  var thead = table.append('thead')
+  var table = d3.select("#percap-table").append("table");
+  var thead = table.append('thead');
   var tbody = table.append('tbody');
 
 // add the header row
    thead.append('tr')
-      .selectAll('th')
+      .selectAll('.th-percap')
       .data(columns)
       .enter()
       .append('th')
       .text(function(column){ return column; })
-      .attr("class", "th-percap");
+      .attr('class', 'th-percap');
 
 // create a row for each object in the dataset
-    var rows = tbody.selectAll('tr')
+    var rows = tbody.selectAll('.tr-percap')
       .data(highest)
       .enter()
-      .append('tr');
+      .append('tr')
+      .attr('class', 'tr-percap');
 
 // create a cell in each row for each columns
-  var cells = rows.selectAll('td')
+  var cells = rows.selectAll('.td-percap')
      .data(function(row){
        return columns.map(function(column){
          return {column: column, value: row[column]};
@@ -531,7 +534,7 @@ function tabulate(highest, columns){
      .enter()
      .append('td')
      .text(function(d){ return d.value; })
-     .attr("class", "tr-percap");
+     .attr('class', 'td-percap');
 
      return table;
 }
@@ -544,12 +547,12 @@ d3.select("#button-right").on("click", function(){
 
   $("#button-left").removeClass('button-active').addClass('button-inactive')
 
-  var tbody = d3.select('#percap-table').selectAll('tbody');
+  var tbody = d3.select('#percap-table').select('tbody');
   var columns = ['State', 'Shootings Per Million'];
 
-  tbody.selectAll("tr")
+  tbody.selectAll(".tr-percap")
     .data(lowest)
-    .selectAll("td")
+    .selectAll(".td-percap")
     .data(function(row){
       return columns.map(function(column){
         return {
@@ -566,12 +569,12 @@ d3.select("#button-left").on("click", function(){
 
   $("#button-right").removeClass('button-active').addClass('button-inactive')
 
-  var tbody = d3.select('#percap-table').selectAll('tbody');
+  var tbody = d3.select('#percap-table').select('tbody');
   var columns = ['State', 'Shootings Per Million'];
 
-  tbody.selectAll("tr")
+  tbody.selectAll(".tr-percap")
     .data(highest)
-    .selectAll("td")
+    .selectAll(".td-percap")
     .data(function(row){
       return columns.map(function(column){
         return {
@@ -714,26 +717,28 @@ var lowestRaw = [
 
 // get the table selection
 function tabulateRaw(highestRaw, columns){
-  var table = d3.select("#total-table").append("table")
-  var thead = table.append('thead')
+  var table = d3.select('#total-table').append('table');
+  var thead = table.append('thead');
   var tbody = table.append('tbody');
 
 // add the header row
    thead.append('tr')
-      .selectAll('th')
+      .selectAll('.th-total')
       .data(columns)
       .enter()
       .append('th')
-      .text(function(column){ return column; });
+      .text(function(column){ return column; })
+      .attr('class','th-total');
 
 // create a row for each object in the dataset
-    var rows = tbody.selectAll('tr')
+    var rows = tbody.selectAll('.tr-total')
       .data(highestRaw)
       .enter()
-      .append('tr');
+      .append('tr')
+      .attr('class', 'tr-total');
 
 // create a cell in each row for each columns
-  var cells = rows.selectAll('td')
+  var cells = rows.selectAll('.td-total')
      .data(function(row){
        return columns.map(function(column){
          return {column: column, value: row[column]};
@@ -741,7 +746,8 @@ function tabulateRaw(highestRaw, columns){
      })
      .enter()
      .append('td')
-     .text(function(d){ return d.value; });
+     .text(function(d){ return d.value; })
+     .attr('class', 'td-total');
 
      return table;
 }
@@ -753,12 +759,12 @@ d3.select("#button-right-2").on("click", function(){
 
   $("#button-left-2").removeClass('button-active-2').addClass('button-inactive-2')
 
-  var tbody = d3.select('#total-table').selectAll('tbody');
+  var tbody = d3.select('#total-table').select('tbody');
   var columns = ['State', 'Number of Shootings'];
 
-  tbody.selectAll("tr")
-    .data(lowest)
-    .selectAll("td")
+  tbody.selectAll('.tr-total')
+    .data(lowestRaw)
+    .selectAll('.td-total')
     .data(function(row){
       return columns.map(function(column){
         return {
@@ -775,12 +781,12 @@ d3.select("#button-left-2").on("click", function(){
 
   $("#button-right-2").removeClass('button-active-2').addClass('button-inactive-2')
 
-  var tbody = d3.select('#total-table').selectAll('tbody');
+  var tbody = d3.select('#total-table').select('tbody');
   var columns = ['State', 'Number of Shootings'];
 
-  tbody.selectAll("tr")
-    .data(highest)
-    .selectAll("td")
+  tbody.selectAll('.tr-total')
+    .data(highestRaw)
+    .selectAll('.td-total')
     .data(function(row){
       return columns.map(function(column){
         return {
