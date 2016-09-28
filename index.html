@@ -658,14 +658,19 @@ d3.json("usa.geojson", function(error, usa) {
   console.log(usa);
   dataset = usa.features;
 
+  // set the radius scale for proportional symbols
+  var radius = d3.scaleSqrt()
+    .domain([0, 285])
+    .range([0, 80]);
+
   svgCircles.append("g")
       .attr("class", "states-invisible")
       .selectAll("circle")
-      .data(dataset)
+      .data(dataset.sort(function(a, b) { return b.properties.shootings - a.properties.shootings; }))
       .enter()
       .append("circle")
       .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .attr("r", function(d){ return 80 * Math.sqrt(d.properties.shootings)/Math.sqrt(285)})
+      .attr("r", function(d){ return radius(d.properties.shootings); })
       .attr("stroke", "white")
       .attr("stroke-width", 0.5)
       .attr("fill", "#B24739")
@@ -694,6 +699,34 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
       .attr("class", "state-labels")
       .text(function(d){ return d.properties.STUSPS });
+
+  // and add a legend
+
+  var circlesLegendData = [10, 50, 100]
+
+  var circlesLegend = svgCircles.append("g")
+      .attr("class", "legend-circles")
+      .attr("transform", "translate(" + (width - 140) + "," + (height) + ")")
+      .selectAll("g")
+      .data(circlesLegendData)
+      .enter()
+      .append("g");
+
+  circlesLegend.append("circle")
+      .attr("cy", function(d){ return -radius(d); })
+      .attr("r", radius)
+      .attr("fill", "none")
+      .attr("stroke", "#B24739")
+      .attr("stroke-width", "0.5");
+
+  circlesLegend.append("text")
+      .text(function(d){ return d; })
+      .attr("y", function(d) { return -2 * radius(d); })
+      .attr("dy", "1.3em")
+      .attr("text-anchor", "middle")
+      .attr("fill", "#666")
+      .attr("font-size", "10px")
+      .attr("font-family", "HelveticaNeue-Bold, Helvetica, sans-serif");
 
       // create a scatterplot to visualize the data
 
