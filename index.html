@@ -378,25 +378,55 @@ td {
 
 #bar-chart {
   position: absolute;
-  top: 1250px;
-  left: 300px;
-  width: 960px;
+  top: 1400px;
+  width: 1260px;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  shape-rendering: crispEdges;
+  stroke: #333;
 }
 
 .xaxisline {
   fill: none;
-  stroke: #000;
+  stroke: #333;
   shape-rendering: crispEdges;
 }
 
 .yaxisline {
   fill: none;
-  stroke: #000;
+  stroke: #333;
   shape-rendering: crispEdges;
 }
 
 .bar {
   fill: steelblue;
+}
+
+#date-title {
+  font-family: "Gill Sans MT", Helvetica, sans-serif;;
+  font-size: 30px;
+  color: #333333;
+  position:absolute;
+  top: 1250px;
+  left: 50px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#date-description {
+  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
+  font-size: 14px;
+  color: #333;
+  position: absolute;
+  top: 1260px;
+  left: 450px;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 </style>
@@ -430,6 +460,8 @@ td {
   <button id="button-right-2" class="button-inactive-2">Lowest</button>
 </div>
 <div id="bar-chart"></div>
+<h1 id="date-title">How are Shootings<br>Distributed Over <br> the Course of the Year?</h1>
+<p id="date-description">Examining the data reveals no distinct temporal trends in police involved shootings. <br><br>In the time period surveyed, <b>July 2015</b> and <b>March 2015</b> had the most shootings of any month <br>at <b>124</b> and <b>113</b>, respectively. <b>June 2015</b> and <b>April 2016</b> tied for the least, each with <b>80</b> shootings.<br> Perhaps the most troubling aspect of this visualization is that there have only been <b>27 days</b> <br>in this <b>556-day time period</b> in which no police involved shootings occurred.</p>
 <div id="scatterplot"></div>
 
 <script>
@@ -919,8 +951,8 @@ d3.select("#button-left-2").on("click", function(){
 
 // set dimensions of svg
 var marginBar = {top: 20, right: 20, bottom: 30, left: 50},
-    widthBar = 960 - marginBar.left - marginBar.right,
-    heightBar = 500 - marginBar.top - marginBar.bottom;
+    widthBar = 1260 - marginBar.left - marginBar.right,
+    heightBar = 350 - marginBar.top - marginBar.bottom;
 
 // set a variable to parse the date
 var parseTime = d3.timeParse("%d-%b-%y");
@@ -954,34 +986,43 @@ d3.csv("barchart.csv", function(error, data){
   xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
   yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
 
+  // set the colors of the bars based on height
+  var barColors = ["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"];
+
   // add the bars
   svgBar.selectAll(".bar")
       .data(data)
       .enter()
       .append("rect")
-      .attr("class", "bar")
       .attr("x", function(d){ return xScaleBar(d.date); })
       .attr("width", widthBar / 556)
       .attr("y", function(d){ return yScaleBar(d.count); })
-      .attr("height", function(d){ return heightBar - yScaleBar(d.count); });
+      .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+      .attr("fill", function(d){
+        if (d.count < 2){
+          return "#dadaeb";
+        }
+        else if (d.count < 4){
+          return "#bcbddc";
+        }
+        else if (d.count < 6){
+          return "#9e9ac8";
+        }
+        else {
+          return "#756bb1";
+        }
+      });
 
   // add the x axis
   svgBar.append("g")
-      .attr("class", "xaxisline")
       .attr("transform", "translate(0," + heightBar + ")")
-      .call(d3.axisBottom(xScaleBar))
-      .append("text")
-      .text("Date");
+      .call(d3.axisBottom(xScaleBar).tickSize([3]))
+      .attr("text-anchor", "start");
 
+  // add the y axis
   svgBar.append("g")
-      .attr("class", "yaxisline")
-      .call(d3.axisLeft(yScaleBar))
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Number of Shootings");
+      .call(d3.axisLeft(yScaleBar).tickSize([3]))
+      .attr("text-anchor", "end");
 
 });
 
