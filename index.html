@@ -376,9 +376,9 @@ td {
 .td-total{}
 .tr-total{}
 
-#line-chart {
+#bar-chart {
   position: absolute;
-  top: 1500px;
+  top: 1250px;
   left: 300px;
   width: 960px;
 }
@@ -395,10 +395,8 @@ td {
   shape-rendering: crispEdges;
 }
 
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+.bar {
+  fill: steelblue;
 }
 
 </style>
@@ -431,7 +429,7 @@ td {
   <button id="button-left-2" class="button-active-2">Highest</button>
   <button id="button-right-2" class="button-inactive-2">Lowest</button>
 </div>
-<div id="line-chart"></div>
+<div id="bar-chart"></div>
 <div id="scatterplot"></div>
 
 <script>
@@ -920,53 +918,64 @@ d3.select("#button-left-2").on("click", function(){
 // now build a line graph to look at shootings based on time of year
 
 // set dimensions of svg
-var marginLine = {top: 20, right: 20, bottom: 30, left: 50},
-    widthLine = 960 - marginLine.left - marginLine.right,
-    heightLine = 500 - marginLine.top - marginLine.bottom;
+var marginBar = {top: 20, right: 20, bottom: 30, left: 50},
+    widthBar = 960 - marginBar.left - marginBar.right,
+    heightBar = 500 - marginBar.top - marginBar.bottom;
 
-// set a variable to format the date
-var formatDate = d3.timeFormat("%d-%b-%y");
+// set a variable to parse the date
+var parseTime = d3.timeParse("%d-%b-%y");
 
-// set the scales and axes
-var xScaleLine = d3.scaleTime()
-                  .range([0, widthLine]);
+// set the scales
+var xScaleBar = d3.scaleTime()
+                  .range([0, widthBar]);
 
-var yScaleLine = d3.scaleLinear()
-                  .range([heightLine, 0]);
-
-var xAxisLine = d3.axisBottom(xScaleLine);
-
-var yAxisLine = d3.axisLeft(yScaleLine);
-
-var line = d3.line()
-    .x(function(d) { return x(d[date]); })
-    .y(function(d) { return y(d[count]); });
+var yScaleBar = d3.scaleLinear()
+                  .range([heightBar, 0]);
 
 // add the svg
-
-var svgLine = d3.select("#line-chart").append("svg")
-    .attr("width", widthLine + marginLine.left + marginLine.right)
-    .attr("height", heightLine + marginLine.top + marginLine.bottom)
+var svgBar = d3.select("#bar-chart").append("svg")
+    .attr("width", widthBar + marginBar.left + marginBar.right)
+    .attr("height", heightBar + marginBar.top + marginBar.bottom)
     .append("g")
-    .attr("transform", "translate(" + marginLine.left + "," + marginLine.top + ")");
+    .attr("transform", "translate(" + marginBar.left + "," + marginBar.top + ")");
 
 // load the data
-d3.csvParse("barchart.csv", type, function(error, data){
+d3.csv("barchart.csv", function(error, data){
   if (error) throw error;
   console.log(data);
 
-  xScaleLine.domain(d3.extent(data, function(d){ return d[date]; }));
-  yScaleLine.domain(d3.extent(data, function(d){ return d[count]; }));
+  // format the date
+  data.forEach(function(d){
+    d.date = parseTime(d.date);
+    d.count = +d.count;
+  })
 
+  // scale the domain of the data
+  xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
+  yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
 
-  svgLine.append("g")
+  // add the bars
+  svgBar.selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d){ return xScaleBar(d.date); })
+      .attr("width", widthBar / 556)
+      .attr("y", function(d){ return yScaleBar(d.count); })
+      .attr("height", function(d){ return heightBar - yScaleBar(d.count); });
+
+  // add the x axis
+  svgBar.append("g")
       .attr("class", "xaxisline")
-      .attr("transform", "translate(0," + heightLine + ")")
-      .call(xAxisLine);
+      .attr("transform", "translate(0," + heightBar + ")")
+      .call(d3.axisBottom(xScaleBar))
+      .append("text")
+      .text("Date");
 
-  svgLine.append("g")
+  svgBar.append("g")
       .attr("class", "yaxisline")
-      .call(yAxisLine)
+      .call(d3.axisLeft(yScaleBar))
       .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
@@ -974,18 +983,7 @@ d3.csvParse("barchart.csv", type, function(error, data){
       .style("text-anchor", "end")
       .text("Number of Shootings");
 
-  svg.append("path")
-      .datum(data)
-      .attr("class", "line")
-      .attr("d", line);
-
 });
-
-function type(d) {
-  d[date] = formatDate.parse(d[date]);
-  d[count] = +d[count];
-  return d;
-};
 
 
 
