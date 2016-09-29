@@ -376,6 +376,31 @@ td {
 .td-total{}
 .tr-total{}
 
+#line-chart {
+  position: absolute;
+  top: 1500px;
+  left: 300px;
+  width: 960px;
+}
+
+.xaxisline {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.yaxisline {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
 </style>
 <body>
 <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
@@ -406,6 +431,7 @@ td {
   <button id="button-left-2" class="button-active-2">Highest</button>
   <button id="button-right-2" class="button-inactive-2">Lowest</button>
 </div>
+<div id="line-chart"></div>
 <div id="scatterplot"></div>
 
 <script>
@@ -728,7 +754,7 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("font-size", "10px")
       .attr("font-family", "HelveticaNeue-Bold, Helvetica, sans-serif");
 
-      // create a scatterplot to visualize the data
+      /* // create a scatterplot to visualize the data
 
       // set svg dimensions
       var margin = {top: 35, right: 35, bottom: 35, left: 35},
@@ -785,7 +811,7 @@ d3.json("usa.geojson", function(error, usa) {
                             .call(x);
 
       var yAxis = svgScatter.append("g")
-                            .call(y);
+                            .call(y); */
 
 });
 
@@ -891,7 +917,75 @@ d3.select("#button-left-2").on("click", function(){
 
 })
 
+// now build a line graph to look at shootings based on time of year
 
+// set dimensions of svg
+var marginLine = {top: 20, right: 20, bottom: 30, left: 50},
+    widthLine = 960 - marginLine.left - marginLine.right,
+    heightLine = 500 - marginLine.top - marginLine.bottom;
+
+// set a variable to format the date
+var formatDate = d3.timeFormat("%d-%b-%y");
+
+// set the scales and axes
+var xScaleLine = d3.scaleTime()
+                  .range([0, widthLine]);
+
+var yScaleLine = d3.scaleLinear()
+                  .range([heightLine, 0]);
+
+var xAxisLine = d3.axisBottom(xScaleLine);
+
+var yAxisLine = d3.axisLeft(yScaleLine);
+
+var line = d3.line()
+    .x(function(d) { return x(d[date]); })
+    .y(function(d) { return y(d[count]); });
+
+// add the svg
+
+var svgLine = d3.select("#line-chart").append("svg")
+    .attr("width", widthLine + marginLine.left + marginLine.right)
+    .attr("height", heightLine + marginLine.top + marginLine.bottom)
+    .append("g")
+    .attr("transform", "translate(" + marginLine.left + "," + marginLine.top + ")");
+
+// load the data
+d3.csvParse("barchart.csv", type, function(error, data){
+  if (error) throw error;
+  console.log(data);
+
+  xScaleLine.domain(d3.extent(data, function(d){ return d[date]; }));
+  yScaleLine.domain(d3.extent(data, function(d){ return d[count]; }));
+
+
+  svgLine.append("g")
+      .attr("class", "xaxisline")
+      .attr("transform", "translate(0," + heightLine + ")")
+      .call(xAxisLine);
+
+  svgLine.append("g")
+      .attr("class", "yaxisline")
+      .call(yAxisLine)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Number of Shootings");
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+});
+
+function type(d) {
+  d[date] = formatDate.parse(d[date]);
+  d[count] = +d[count];
+  return d;
+};
 
 
 
