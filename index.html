@@ -2,7 +2,18 @@
 <meta charset="utf-8">
 <style>
 
-#page-title {
+/* page title styles */
+
+#title-container {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  background-color: #FFE800;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  z-index: 9000;
+}
+
+#page-title-left {
   font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
   font-size: 30px;
   color: black;
@@ -15,7 +26,7 @@
   z-index: 9000;
 }
 
-#page-title-2 {
+#page-title-right {
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, sans-serif;
   font-size: 30px;
   color: #999;
@@ -28,98 +39,108 @@
   z-index: 9000;
 }
 
-#sidebar-title-2{
-  font-family: "Gill Sans MT", Helvetica, sans-serif;;
-  font-size: 30px;
-  color: #333333;
-  position:absolute;
-  top: 690px;
-  left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
-}
+/* map containers */
 
-#title-container {
-  width: 100%;
-  height: 60px;
-  position: fixed;
-  background-color: #FFE800;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  z-index: 9000;
-}
-
-#title-container-2 {
-  left: 900px;
-  width: 350px;
-  height: 300px;
-  position: absolute;
-  top: 620px;
-}
-
-#map-container{
+#map-container {
   top: 70px;
   position: absolute;
 }
 
-#legend-container{
+/* legend containers */
+
+#legend-container {
   top: 520px;
   left: 530px;
   position: absolute;
 }
 
-#sidebar-title{
+/* text for titles, stats, and descriptions */
+
+.section-title {
   font-family: "Gill Sans MT", Helvetica, sans-serif;;
   font-size: 30px;
   color: #333333;
   position:absolute;
-  top: 70px;
-  left: 900px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-#state-title{
+#sidebar-title-choro {
+  top: 70px;
+  left: 900px;
+}
+
+#sidebar-title-raw {
+  top: 690px;
+  left: 900px;
+}
+
+#sidebar-title-date {
+  top: 1250px;
+  left: 50px;
+}
+
+.state-name {
   font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
   font-size: 30px;
   color: #333333;
   position:absolute;
-  top: 330px;
-  left: 900px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-#percap-title{
+#state-percap {
+  top: 330px;
+  left: 900px;
+}
+
+#state-raw {
+  top: 950px;
+  left: 900px;
+}
+
+#total-shootings {
   font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
   font-size: 20px;
   color: #666;
   position:absolute;
+  top: 995px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.stat-title {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 20px;
+  color: #666;
+  position:absolute;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#stat-percap {
   top: 375px;
   left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
-#description{
+.description {
   font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
   font-size: 14px;
   color: #333;
   position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#description-percap {
   top: 160px;
   left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
-#description-2{
-  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
-  font-size: 14px;
-  color: #333;
-  position: absolute;
+#description-raw {
   top: 780px;
   left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 #highest-lowest {
@@ -163,28 +184,6 @@
   height: 100px;
   width: 960px;
   left: 100px;
-}
-
-#state-name-2 {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 30px;
-  color: #333333;
-  position:absolute;
-  top: 950px;
-  left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#total-shootings {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 20px;
-  color: #666;
-  position:absolute;
-  top: 995px;
-  left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
 }
 
 .states {
@@ -407,17 +406,6 @@ td {
   fill: steelblue;
 }
 
-#date-title {
-  font-family: "Gill Sans MT", Helvetica, sans-serif;;
-  font-size: 30px;
-  color: #333333;
-  position:absolute;
-  top: 1250px;
-  left: 50px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
 #date-description {
   font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
   font-size: 14px;
@@ -436,23 +424,24 @@ td {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
 <div id="title-container">
-  <h1 id="page-title">Police Involved Shootings in the United States</h1><h1 id="page-title-2">January 1, 2015 – July 9, 2016</h1>
+  <h1 id="page-title-left">Police Involved Shootings in the United States</h1>
+  <h1 id="page-title-right">January 1, 2015 – July 9, 2016</h1>
 </div>
 <div id="map-container"></div>
 <div id="legend-container"></div>
-<h1 id="sidebar-title">Shootings per <br> Million by State</h1>
+<h1 id="sidebar-title-choro" class="section-title">Shootings per <br> Million by State</h1>
 <p id="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
-<h1 id="state-title">New Mexico</h1>
-<h1 id="percap-title">17.26 shootings per million</h1>
+<h1 id="state-percap" class="state-name">New Mexico</h1>
+<h1 id="stat-percap" class="state-name">17.26 shootings per million</h1>
 <div id="highest-lowest">
   <button id="button-left" class="button-active">Highest</button>
   <button id="button-right" class="button-inactive">Lowest</button>
 </div>
 <div id="percap-table"></div>
 <div id="map-container-circles"></div>
-<h1 id="sidebar-title-2">Shootings (Raw Count) <br> by State</h1>
+<h1 id="sidebar-title-raw" class="section-title">Shootings (Raw Count) <br> by State</h1>
 <p id="description-2">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br><b>Vermont</b> and <b>North Dakota</b> had the fewest shootings <br> of all states, with only <b>2</b> each. <br><br> Hover over a state to obtain the number of shootings.</p>
-<h1 id="state-name-2">California</h1>
+<h1 id="state-raw" class="state-name">California</h1>
 <h1 id="total-shootings">285 shootings</h1>
 <div id="total-table"></div>
 <div id="highest-lowest-2">
@@ -460,7 +449,7 @@ td {
   <button id="button-right-2" class="button-inactive-2">Lowest</button>
 </div>
 <div id="bar-chart"></div>
-<h1 id="date-title">How are Shootings<br>Distributed Over <br> the Course of the Year?</h1>
+<h1 id="sidebar-title-date" class="section-title">How are Shootings<br>Distributed Over <br> the Course of the Year?</h1>
 <p id="date-description">Examining the data reveals no distinct temporal trends in police involved shootings. <br><br>In the time period surveyed, <b>July 2015</b> and <b>March 2015</b> had the most shootings of any month <br>at <b>124</b> and <b>113</b>, respectively. <b>June 2015</b> and <b>April 2016</b> tied for the least, each with <b>80</b> shootings.<br> Perhaps the most troubling aspect of this visualization is that there have only been <b>27 days</b> <br>in this <b>556-day time period</b> in which no police involved shootings occurred.</p>
 <div id="scatterplot"></div>
 
@@ -533,13 +522,13 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("d", path)
       .on("mouseover", function(e){
 
-          d3.select("#state-title")
+          d3.select("#state-percap")
             .data(dataset)
             .text(function(){
               return e.properties.NAME;
             });
 
-          d3.select("#percap-title")
+          d3.select("#stat-percap")
             .data(dataset)
             .text(function(){
               return e.properties.per_mil + ' shootings per million';
@@ -733,7 +722,7 @@ d3.json("usa.geojson", function(error, usa) {
       .attr("fill-opacity", 0.5)
       .on("mouseover", function(e){
 
-          d3.select("#state-name-2")
+          d3.select("#state-raw")
             .data(dataset)
             .text(function(){
               return e.properties.NAME;
