@@ -1,0 +1,396 @@
+/* page title styles */
+
+#title-container {
+  width: 100%;
+  height: 60px;
+  position: fixed;
+  background-color: #FFE800;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  z-index: 9000;
+}
+
+#page-title-left {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 30px;
+  color: black;
+  position: fixed;
+  display: inline-block;
+  padding-left: 10px;
+  padding-bottom: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 9000;
+}
+
+#page-title-right {
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, sans-serif;
+  font-size: 30px;
+  color: #999;
+  position: fixed;
+  display: inline-block;
+  left: 690px;
+  padding-bottom: 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  z-index: 9000;
+}
+
+/* map containers */
+
+#map-container-percap {
+  top: 70px;
+  position: absolute;
+}
+
+#map-container-raw {
+  position: absolute;
+  top: 690px;
+}
+
+/* classes for GeoJSON map elements */
+
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+  stroke-width: 0.5;
+}
+
+.states-invisible {
+  fill: none;
+  stroke: none;
+}
+
+.state-labels {
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 8px;
+  color: #fff;
+}
+
+path:hover {
+	fill-opacity: .7;
+}
+
+circle:hover {
+  fill-opacity: 1;
+}
+
+/* legends */
+
+#legend-container {
+  top: 520px;
+  left: 530px;
+  position: absolute;
+}
+
+/* text for titles, stats, and descriptions */
+
+.section-title {
+  font-family: "Gill Sans MT", Helvetica, sans-serif;;
+  font-size: 30px;
+  color: #333333;
+  position:absolute;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#sidebar-title-choro {
+  top: 70px;
+  left: 900px;
+}
+
+#sidebar-title-raw {
+  top: 690px;
+  left: 900px;
+}
+
+#sidebar-title-date {
+  top: 1250px;
+  left: 50px;
+}
+
+.state-name {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 30px;
+  color: #333333;
+  position:absolute;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#state-percap {
+  top: 330px;
+  left: 900px;
+}
+
+#state-raw {
+  top: 950px;
+  left: 900px;
+}
+
+.stat-title {
+  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
+  font-size: 20px;
+  color: #666;
+  position:absolute;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#stat-percap {
+  top: 375px;
+  left: 900px;
+}
+
+#stat-raw {
+  top: 995px;
+  left: 900px;
+}
+
+.description {
+  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
+  font-size: 14px;
+  color: #333;
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#description-percap {
+  top: 160px;
+  left: 900px;
+}
+
+#description-raw {
+  top: 780px;
+  left: 900px;
+}
+
+#description-date {
+  top: 1260px;
+  left: 450px;
+}
+
+/* sidebar buttons */
+
+#button-container-percap {
+  position: absolute;
+  top: 430px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-container-raw {
+  position: absolute;
+  top: 1050px;
+  left: 900px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-left-percap{
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 2px solid rgb(158,202,225);
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-right-percap{
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 2px solid rgb(158,202,225);
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-left-percap:hover {
+  color: #fff;
+  background: rgb(66,146,198);
+}
+
+#button-right-percap:hover {
+  color: #fff;
+  background: rgb(66,146,198);
+}
+
+#button-left-percap:focus {
+  color: #fff;
+  background: rgb(66,146,198);
+  outline: 0;
+}
+
+#button-right-percap:focus {
+  color: #fff;
+  background: rgb(66,146,198);
+  outline: 0;
+}
+
+#button-left-raw{
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 2px solid #FF8778;
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-right-raw{
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border: 2px solid #FF8778;
+  width: 100px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-left-raw:hover {
+  color: #fff;
+  background: #B24739;
+}
+
+#button-right-raw:hover {
+  color: #fff;
+  background: #B24739;
+}
+
+#button-left-raw:focus {
+  color: #fff;
+  background: #B24739;
+  outline: 0;
+}
+
+#button-right-raw:focus {
+  color: #fff;
+  background: #B24739;
+  outline: 0;
+}
+
+.button-active-percap {
+  color: #fff;
+  background: rgb(66,146,198);
+}
+
+.button-inactive-percap {
+  color: rgb(66,146,198);
+  background: #fff;
+}
+
+.button-active-raw {
+  color: #fff;
+  background: #B24739;
+}
+
+.button-inactive-raw {
+  color: #B24739;
+  background: #fff;
+}
+
+/* sidebar tables */
+
+#table-percap {
+  position: absolute;
+  top: 470px;
+  left: 900px;
+}
+
+#table-raw {
+  position: absolute;
+  top: 1100px;
+  left: 900px;
+}
+
+th {
+  text-align: left;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  padding: 0 2em 0.5ex 0;
+  font-size: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+ }
+
+td {
+  text-align: left;
+  padding: 0 2em 1ex 0;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+th {
+  text-align: left;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  padding: 0 2em 0.5ex 0;
+  font-size: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+ }
+
+td {
+  text-align: left;
+  padding: 0 2em 1ex 0;
+  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.th-percap{}
+.td-percap{}
+.tr-percap{}
+.th-total{}
+.td-total{}
+.tr-total{}
+
+/* scatterplot */
+
+#scatterplot {
+  position: absolute;
+  left: 0px;
+  top: 1300px;
+}
+
+/* bar chart axes and labels */
+
+#bar-chart {
+  position: absolute;
+  top: 1400px;
+  width: 1260px;
+}
+
+.axis path {
+  display: none;
+}
+
+.axis line {
+  shape-rendering: crispEdges;
+  stroke: #333;
+}
+
+.xaxisline {
+  fill: none;
+  stroke: #333;
+  shape-rendering: crispEdges;
+}
+
+.yaxisline {
+  fill: none;
+  stroke: #333;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}

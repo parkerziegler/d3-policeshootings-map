@@ -1,1023 +1,602 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<style>
-
-/* page title styles */
-
-#title-container {
-  width: 100%;
-  height: 60px;
-  position: fixed;
-  background-color: #FFE800;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-  z-index: 9000;
-}
-
-#page-title-left {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 30px;
-  color: black;
-  position: fixed;
-  display: inline-block;
-  padding-left: 10px;
-  padding-bottom: 15px;
-  overflow: hidden;
-  white-space: nowrap;
-  z-index: 9000;
-}
-
-#page-title-right {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", Helvetica, sans-serif;
-  font-size: 30px;
-  color: #999;
-  position: fixed;
-  display: inline-block;
-  left: 690px;
-  padding-bottom: 15px;
-  overflow: hidden;
-  white-space: nowrap;
-  z-index: 9000;
-}
-
-/* map containers */
-
-#map-container {
-  top: 70px;
-  position: absolute;
-}
-
-/* legend containers */
-
-#legend-container {
-  top: 520px;
-  left: 530px;
-  position: absolute;
-}
-
-/* text for titles, stats, and descriptions */
-
-.section-title {
-  font-family: "Gill Sans MT", Helvetica, sans-serif;;
-  font-size: 30px;
-  color: #333333;
-  position:absolute;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#sidebar-title-choro {
-  top: 70px;
-  left: 900px;
-}
-
-#sidebar-title-raw {
-  top: 690px;
-  left: 900px;
-}
-
-#sidebar-title-date {
-  top: 1250px;
-  left: 50px;
-}
-
-.state-name {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 30px;
-  color: #333333;
-  position:absolute;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#state-percap {
-  top: 330px;
-  left: 900px;
-}
-
-#state-raw {
-  top: 950px;
-  left: 900px;
-}
-
-#total-shootings {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 20px;
-  color: #666;
-  position:absolute;
-  top: 995px;
-  left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.stat-title {
-  font-family: "HelveticaNeue-Bold", Helvetica, sans-serif;
-  font-size: 20px;
-  color: #666;
-  position:absolute;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#stat-percap {
-  top: 375px;
-  left: 900px;
-}
-
-.description {
-  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
-  font-size: 14px;
-  color: #333;
-  position: absolute;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#description-percap {
-  top: 160px;
-  left: 900px;
-}
-
-#description-raw {
-  top: 780px;
-  left: 900px;
-}
-
-#highest-lowest {
-  position: absolute;
-  top: 430px;
-  left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#highest-lowest-2 {
-  position: absolute;
-  top: 1050px;
-  left: 900px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#percap-table {
-  position: absolute;
-  top: 470px;
-  left: 900px;
-}
-
-#map-container-circles {
-  position: absolute;
-  top: 690px;
-}
-
-#state-container-2 {
-  position:absolute;
-  top: 1170px;
-  height: 100px;
-  width: 960px;
-  left: 100px;
-}
-
-#total-container{
-  position:absolute;
-  top: 1225px;
-  height: 100px;
-  width: 960px;
-  left: 100px;
-}
-
-.states {
-  fill: none;
-  stroke: #fff;
-  stroke-linejoin: round;
-  stroke-width: 0.5;
-}
-
-.states-invisible {
-  fill: none;
-  stroke: none;
-}
-
-.state-labels {
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
-  font-size: 8px;
-  color: #fff;
-}
-
-path:hover {
-	fill-opacity: .7;
-}
-
-circle:hover {
-  fill-opacity: 1;
-}
-
-#button-left{
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
-  font-size: 14px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border: 2px solid rgb(158,202,225);
-  width: 100px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#button-right{
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
-  font-size: 14px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: 2px solid rgb(158,202,225);
-  width: 100px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#button-left:hover {
-  color: #fff;
-  background: rgb(66,146,198);
-}
-
-#button-right:hover {
-  color: #fff;
-  background: rgb(66,146,198);
-}
-
-#button-left:focus {
-  color: #fff;
-  background: rgb(66,146,198);
-  outline: 0;
-}
-
-#button-right:focus {
-  color: #fff;
-  background: rgb(66,146,198);
-  outline: 0;
-}
-
-#total-table {
-  position: absolute;
-  top: 1100px;
-  left: 900px;
-}
-
-#button-left-2{
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
-  font-size: 14px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border: 2px solid #FF8778;
-  width: 100px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#button-right-2{
-  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
-  font-size: 14px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  border: 2px solid #FF8778;
-  width: 100px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-#button-left-2:hover {
-  color: #fff;
-  background: #B24739;
-}
-
-#button-right-2:hover {
-  color: #fff;
-  background: #B24739;
-}
-
-#button-left-2:focus {
-  color: #fff;
-  background: #B24739;
-  outline: 0;
-}
-
-#button-right-2:focus {
-  color: #fff;
-  background: #B24739;
-  outline: 0;
-}
-
-#scatterplot {
-  position: absolute;
-  left: 0px;
-  top: 1300px;
-}
-
-.button-active {
-  color: #fff;
-  background: rgb(66,146,198);
-}
-
-.button-inactive {
-  color: rgb(66,146,198);
-  background: #fff;
-}
-
-.button-active-2 {
-  color: #fff;
-  background: #B24739;
-}
-
-.button-inactive-2 {
-  color: #B24739;
-  background: #fff;
-}
-
-th {
-  text-align: left;
-  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
-  padding: 0 2em 0.5ex 0;
-  font-size: 16px;
-  overflow: hidden;
-  white-space: nowrap;
- }
-
-td {
-  text-align: left;
-  padding: 0 2em 1ex 0;
-  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
-  font-size: 12px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-th {
-  text-align: left;
-  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
-  padding: 0 2em 0.5ex 0;
-  font-size: 16px;
-  overflow: hidden;
-  white-space: nowrap;
- }
-
-td {
-  text-align: left;
-  padding: 0 2em 1ex 0;
-  font-family: "HelveticaNeue_Light", Helvetica, sans-serif;
-  font-size: 12px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.th-percap{}
-.td-percap{}
-.tr-percap{}
-.th-total{}
-.td-total{}
-.tr-total{}
-
-#bar-chart {
-  position: absolute;
-  top: 1400px;
-  width: 1260px;
-}
-
-.axis path {
-  display: none;
-}
-
-.axis line {
-  shape-rendering: crispEdges;
-  stroke: #333;
-}
-
-.xaxisline {
-  fill: none;
-  stroke: #333;
-  shape-rendering: crispEdges;
-}
-
-.yaxisline {
-  fill: none;
-  stroke: #333;
-  shape-rendering: crispEdges;
-}
-
-.bar {
-  fill: steelblue;
-}
-
-#date-description {
-  font-family: "Palatino Linotype", "Book Antigua", Palatino, serif;
-  font-size: 14px;
-  color: #333;
-  position: absolute;
-  top: 1260px;
-  left: 450px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-</style>
-<body>
-<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-<script src="http://d3js.org/topojson.v1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-<div id="title-container">
-  <h1 id="page-title-left">Police Involved Shootings in the United States</h1>
-  <h1 id="page-title-right">January 1, 2015 – July 9, 2016</h1>
-</div>
-<div id="map-container"></div>
-<div id="legend-container"></div>
-<h1 id="sidebar-title-choro" class="section-title">Shootings per <br> Million by State</h1>
-<p id="description-percap" class="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
-<h1 id="state-percap" class="state-name">New Mexico</h1>
-<h1 id="stat-percap" class="stat-title">17.26 shootings per million</h1>
-<div id="highest-lowest">
-  <button id="button-left" class="button-active">Highest</button>
-  <button id="button-right" class="button-inactive">Lowest</button>
-</div>
-<div id="percap-table"></div>
-<div id="map-container-circles"></div>
-<h1 id="sidebar-title-raw" class="section-title">Shootings (Raw Count) <br> by State</h1>
-<p id="description-raw" class="description">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br><b>Vermont</b> and <b>North Dakota</b> had the fewest shootings <br> of all states, with only <b>2</b> each. <br><br> Hover over a state to obtain the number of shootings.</p>
-<h1 id="state-raw" class="state-name">California</h1>
-<h1 id="total-shootings">285 shootings</h1>
-<div id="total-table"></div>
-<div id="highest-lowest-2">
-  <button id="button-left-2" class="button-active-2">Highest</button>
-  <button id="button-right-2" class="button-inactive-2">Lowest</button>
-</div>
-<div id="bar-chart"></div>
-<h1 id="sidebar-title-date" class="section-title">How are Shootings<br>Distributed Over <br> the Course of the Year?</h1>
-<p id="date-description">Examining the data reveals no distinct temporal trends in police involved shootings. <br><br>In the time period surveyed, <b>July 2015</b> and <b>March 2015</b> had the most shootings of any month <br>at <b>124</b> and <b>113</b>, respectively. <b>June 2015</b> and <b>April 2016</b> tied for the least, each with <b>80</b> shootings.<br> Perhaps the most troubling aspect of this visualization is that there have only been <b>27 days</b> <br>in this <b>556-day time period</b> in which no police involved shootings occurred.</p>
-<div id="scatterplot"></div>
-
-<script>
-
-// set the height and width of the map svg
-var width = 960,
-    height = 500;
-
-// set the projection
-var projection = d3.geoAlbersUsa()
-    .scale(1000)
-    .translate([width / 2, height / 2]);
-
-// set the path
-var path = d3.geoPath()
-    .projection(projection);
-
-// create an empty dataset variable
-var dataset;
-
-// append the main map svg
-var svg = d3.select("#map-container").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-// create a function to assign fill color based on values
-var quantize = function(d){
-  if(d < 1){
-    return "rgb(247,251,255)";
-  }
-  else if(d < 3){
-    return "rgb(222,235,247)";
-  }
-  else if(d < 5){
-    return "rgb(198,219,239)";
-  }
-  else if(d < 7){
-    return "rgb(158,202,225)";
-  }
-  else if(d < 10){
-    return "rgb(107,174,214)";
-  }
-  else if(d < 12){
-    return "rgb(66,146,198)";
-  }
-  else if(d < 15){
-    return "rgb(33,113,181)";
-  }
-  else {
-    return "rgb(8,81,156)";
-  }
-};
-
-// load the data
-d3.json("usa.geojson", function(error, usa) {
-  if (error) return console.error(error);
-  console.log(usa);
-  dataset = usa.features;
-
-  svg.append("g")
-      .attr("class", "states")
-      .selectAll("path")
-      .data(dataset)
-      .enter()
-      .append("path")
-      .attr("fill", function(d) {
-        return quantize(d.properties.per_mil);
-      })
-      .attr("d", path)
-      .on("mouseover", function(e){
-
-          d3.select("#state-percap")
-            .data(dataset)
-            .text(function(){
-              return e.properties.NAME;
-            });
-
-          d3.select("#stat-percap")
-            .data(dataset)
-            .text(function(){
-              return e.properties.per_mil + ' shootings per million';
-            });
-
-      });
-
-  svg.append("path")
-      .datum(dataset)
-      .attr("d", path);
-
-});
-
-// now create a legend. start by storing all color values in an array
-var colorLegend = ["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)", "rgb(33,113,181)", "rgb(8,81,156)"];
-
-// define a new legend
-var svgLegend = d3.select('#legend-container').append('svg')
-                  .attr('width', 300)
-                  .attr('height', 100);
-
-svgLegend.append("g")
-   .attr("class", "legend")
-   .selectAll("rect")
-   .data(colorLegend)
-   .enter()
-   .append("rect")
-   .attr("fill", function(d, i){ return colorLegend[i]; })
-   .attr("x", function(d, i){ return (i*30); })
-   .attr("y", 50)
-   .attr("width", 30)
-   .attr("height", 20);
-
-var titleLegend = "Shootings Per Million";
-
-// add a legend title
-svgLegend.append("text")
-  .attr("font-size", "12px")
-  .attr("font-family", "HelveticaNeue-Bold, Helvetica, sans-serif")
-  .attr("y", 40)
-  .text("Shootings Per Million");
-
-// add numbers to legend
-
-var labelsLegend = ["0-1","1-3","3-5","5-7","7-10","10-12","12-15",">15"];
-
-svgLegend.append("g")
-  .attr("class", "legend-labels")
-  .selectAll("text")
-  .data(labelsLegend)
-  .enter()
-  .append("text")
-  .attr("font-size", "10px")
-  .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
-  .attr("x", function(d, i){ return (i*30); })
-  .attr("y", 85)
-  .text(function(d){ return d; });
-
-
-// create a table for the highest and lowest state data
-// data definitions
-var highest = [
-  {"State": "New Mexico", "Shootings Per Million": 17.26},
-  {"State": "District of Columbia", "Shootings Per Million": 15.18},
-  {"State": "Wyoming", "Shootings Per Million": 13.70},
-  {"State": "Oklahoma", "Shootings Per Million": 12.89},
-  {"State": "Alaska", "Shootings Per Million": 12.22}
-]
-
-var lowest = [
-  {"State": "Connecticut", "Shootings Per Million": 1.95},
-  {"State": "New York", "Shootings Per Million": 2.03},
-  {"State": "Maine", "Shootings Per Million": 2.26},
-  {"State": "Iowa", "Shootings Per Million": 2.57},
-  {"State": "North Dakota", "Shootings Per Million": 2.70}
-]
-
-// get the table selection
-function tabulate(highest, columns){
-  var table = d3.select("#percap-table").append("table");
-  var thead = table.append('thead');
-  var tbody = table.append('tbody');
-
-// add the header row
-   thead.append('tr')
-      .selectAll('.th-percap')
-      .data(columns)
-      .enter()
-      .append('th')
-      .text(function(column){ return column; })
-      .attr('class', 'th-percap');
-
-// create a row for each object in the dataset
-    var rows = tbody.selectAll('.tr-percap')
-      .data(highest)
-      .enter()
-      .append('tr')
-      .attr('class', 'tr-percap');
-
-// create a cell in each row for each columns
-  var cells = rows.selectAll('.td-percap')
-     .data(function(row){
-       return columns.map(function(column){
-         return {column: column, value: row[column]};
-       });
-     })
-     .enter()
-     .append('td')
-     .text(function(d){ return d.value; })
-     .attr('class', 'td-percap');
-
-     return table;
-}
-
-// render the table
-tabulate(highest, ['State', 'Shootings Per Million']);
-
-// change the table on button click
-d3.select("#button-right").on("click", function(){
-
-  $("#button-left").removeClass('button-active').addClass('button-inactive')
-
-  var tbody = d3.select('#percap-table').select('tbody');
-  var columns = ['State', 'Shootings Per Million'];
-
-  tbody.selectAll(".tr-percap")
-    .data(lowest)
-    .selectAll(".td-percap")
-    .data(function(row){
-      return columns.map(function(column){
-        return {
-          column: column,
-          value: row[column]
-        };
-      });
-    })
-    .text(function(d){ return d.value; });
-
-})
-
-d3.select("#button-left").on("click", function(){
-
-  $("#button-right").removeClass('button-active').addClass('button-inactive')
-
-  var tbody = d3.select('#percap-table').select('tbody');
-  var columns = ['State', 'Shootings Per Million'];
-
-  tbody.selectAll(".tr-percap")
-    .data(highest)
-    .selectAll(".td-percap")
-    .data(function(row){
-      return columns.map(function(column){
-        return {
-          column: column,
-          value: row[column]
-        };
-      });
-    })
-    .text(function(d){ return d.value; });
-
-})
-
-
-// create a second svg for graduated circles
-var svgCircles = d3.select("#map-container-circles").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-// load the data
-d3.json("usa.geojson", function(error, usa) {
-  if (error) return console.error(error);
-  console.log(usa);
-  dataset = usa.features;
-
-  // set the radius scale for proportional symbols
-  var radius = d3.scaleSqrt()
-    .domain([0, 285])
-    .range([0, 80]);
-
-  svgCircles.append("g")
-      .attr("class", "states-invisible")
-      .selectAll("circle")
-      .data(dataset.sort(function(a, b) { return b.properties.shootings - a.properties.shootings; }))
-      .enter()
-      .append("circle")
-      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .attr("r", function(d){ return radius(d.properties.shootings); })
-      .attr("stroke", "white")
-      .attr("stroke-width", 0.5)
-      .attr("fill", "#B24739")
-      .attr("fill-opacity", 0.5)
-      .on("mouseover", function(e){
-
-          d3.select("#state-raw")
-            .data(dataset)
-            .text(function(){
-              return e.properties.NAME;
-            });
-
-          d3.select("#total-shootings")
-            .data(dataset)
-            .text(function(){
-              return e.properties.shootings + ' shootings';
-            });
-        })
-
-  // now add some labels
-  svgCircles.append("g")
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="CSS/styles.css"></style>
+  </head>
+  <body>
+    <script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <div id="title-container">
+      <h1 id="page-title-left">Police Involved Shootings in the United States</h1>
+      <h1 id="page-title-right">January 1, 2015 – July 9, 2016</h1>
+    </div>
+    <div id="map-container-percap"></div>
+    <div id="legend-container"></div>
+    <h1 id="sidebar-title-choro" class="section-title">Shootings per <br> Million by State</h1>
+    <p id="description-percap" class="description">Between January 1, 2015 and July 9, 2016, <b>1,715</b> <br> people were killed by police in the United States.<br> That amounts to roughly <b>3.1 people per day</b>. <br><br><b>New Mexico</b> had the highest normalized rate <br> of police involved shootings in this time period, <br>with <b>17.26</b> for every million residents.<br><br> Hover over a state to obtain its rate.</p>
+    <h1 id="state-percap" class="state-name">New Mexico</h1>
+    <h1 id="stat-percap" class="stat-title">17.26 shootings per million</h1>
+    <div id="button-container-percap">
+      <button id="button-left-percap" class="button-active-percap">Highest</button>
+      <button id="button-right-percap" class="button-inactive-percap">Lowest</button>
+    </div>
+    <div id="table-percap"></div>
+    <div id="map-container-raw"></div>
+    <h1 id="sidebar-title-raw" class="section-title">Shootings (Raw Count) <br> by State</h1>
+    <p id="description-raw" class="description">Of all 50 states, <b>California</b> had the greatest number<br> of shootings in this time period at <b>285</b>. <b>Texas</b> and <br><b>Florida</b> had the second and third most shootings <br> at <b>163</b> and <b>110</b>, respectively.<br><br><b>Vermont</b> and <b>North Dakota</b> had the fewest shootings <br> of all states, with only <b>2</b> each. <br><br> Hover over a state to obtain the number of shootings.</p>
+    <h1 id="state-raw" class="state-name">California</h1>
+    <h1 id="stat-raw" class="stat-title">285 shootings</h1>
+    <div id="table-raw"></div>
+    <div id="button-container-raw">
+      <button id="button-left-raw" class="button-active-raw">Highest</button>
+      <button id="button-right-raw" class="button-inactive-raw">Lowest</button>
+    </div>
+    <div id="bar-chart"></div>
+    <h1 id="sidebar-title-date" class="section-title">How are Shootings<br>Distributed Over <br> the Course of the Year?</h1>
+    <p id="description-date" class="description">Examining the data reveals no distinct temporal trends in police involved shootings. <br><br>In the time period surveyed, <b>July 2015</b> and <b>March 2015</b> had the most shootings of any month <br>at <b>124</b> and <b>113</b>, respectively. <b>June 2015</b> and <b>April 2016</b> tied for the least, each with <b>80</b> shootings.<br> Perhaps the most troubling aspect of this visualization is that there have only been <b>27 days</b> <br>in this <b>556-day time period</b> in which no police involved shootings occurred.</p>
+    <div id="scatterplot"></div>
+
+    <script type="text/javascript">
+    // set the height and width of the map svg
+    var width = 960,
+        height = 500;
+
+    // set the projection
+    var projection = d3.geoAlbersUsa()
+        .scale(1000)
+        .translate([width / 2, height / 2]);
+
+    // set the path
+    var path = d3.geoPath()
+        .projection(projection);
+
+    // create an empty dataset variable
+    var dataset;
+
+    // append the main map svg
+    var svg = d3.select("#map-container-percap").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    // create a function to assign fill color based on values
+    var quantize = function(d){
+      if(d < 1){
+        return "rgb(247,251,255)";
+      }
+      else if(d < 3){
+        return "rgb(222,235,247)";
+      }
+      else if(d < 5){
+        return "rgb(198,219,239)";
+      }
+      else if(d < 7){
+        return "rgb(158,202,225)";
+      }
+      else if(d < 10){
+        return "rgb(107,174,214)";
+      }
+      else if(d < 12){
+        return "rgb(66,146,198)";
+      }
+      else if(d < 15){
+        return "rgb(33,113,181)";
+      }
+      else {
+        return "rgb(8,81,156)";
+      }
+    };
+
+    // load the data
+    d3.json("Data/usa.geojson", function(error, usa) {
+      if (error) return console.error(error);
+      console.log(usa);
+      dataset = usa.features;
+
+      svg.append("g")
+          .attr("class", "states")
+          .selectAll("path")
+          .data(dataset)
+          .enter()
+          .append("path")
+          .attr("fill", function(d) {
+            return quantize(d.properties.per_mil);
+          })
+          .attr("d", path)
+          .on("mouseover", function(e){
+
+              d3.select("#state-percap")
+                .data(dataset)
+                .text(function(){
+                  return e.properties.NAME;
+                });
+
+              d3.select("#stat-percap")
+                .data(dataset)
+                .text(function(){
+                  return e.properties.per_mil + ' shootings per million';
+                });
+
+          });
+
+      svg.append("path")
+          .datum(dataset)
+          .attr("d", path);
+
+    });
+
+    // now create a legend. start by storing all color values in an array
+    var colorLegend = ["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)", "rgb(33,113,181)", "rgb(8,81,156)"];
+
+    // define a new legend
+    var svgLegend = d3.select('#legend-container').append('svg')
+                      .attr('width', 300)
+                      .attr('height', 100);
+
+    svgLegend.append("g")
+       .attr("class", "legend")
+       .selectAll("rect")
+       .data(colorLegend)
+       .enter()
+       .append("rect")
+       .attr("fill", function(d, i){ return colorLegend[i]; })
+       .attr("x", function(d, i){ return (i*30); })
+       .attr("y", 50)
+       .attr("width", 30)
+       .attr("height", 20);
+
+    // add a legend title
+    svgLegend.append("text")
+      .attr("font-size", "12px")
+      .attr("font-family", "HelveticaNeue-Bold, Helvetica, sans-serif")
+      .attr("y", 40)
+      .text("Shootings Per Million");
+
+    // add numbers to legend
+
+    var labelsLegend = ["0-1","1-3","3-5","5-7","7-10","10-12","12-15",">15"];
+
+    svgLegend.append("g")
+      .attr("class", "legend-labels")
       .selectAll("text")
-      .data(dataset)
+      .data(labelsLegend)
       .enter()
       .append("text")
-      .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
-      .attr("class", "state-labels")
-      .text(function(d){ return d.properties.STUSPS });
-
-  // and add a legend
-
-  var circlesLegendData = [10, 50, 100]
-
-  var circlesLegend = svgCircles.append("g")
-      .attr("class", "legend-circles")
-      .attr("transform", "translate(" + (width - 140) + "," + (height) + ")")
-      .selectAll("g")
-      .data(circlesLegendData)
-      .enter()
-      .append("g");
-
-  circlesLegend.append("circle")
-      .attr("cy", function(d){ return -radius(d); })
-      .attr("r", radius)
-      .attr("fill", "none")
-      .attr("stroke", "#B24739")
-      .attr("stroke-width", "0.5");
-
-  circlesLegend.append("text")
-      .text(function(d){ return d; })
-      .attr("y", function(d) { return -2 * radius(d); })
-      .attr("dy", "1.3em")
-      .attr("text-anchor", "middle")
-      .attr("fill", "#666")
       .attr("font-size", "10px")
-      .attr("font-family", "HelveticaNeue-Bold, Helvetica, sans-serif");
+      .attr("font-family", "HelveticaNeue-Light, Helvetica, sans-serif")
+      .attr("x", function(d, i){ return (i*30); })
+      .attr("y", 85)
+      .text(function(d){ return d; });
 
-      /* // create a scatterplot to visualize the data
 
-      // set svg dimensions
-      var margin = {top: 35, right: 35, bottom: 35, left: 35},
-          wScatter = 370 - margin.left - margin.right,
-          hScatter = 250 - margin.top - margin.bottom;
+    // create a table for the highest and lowest state data
+    // data definitions
+    var highest = [
+      {"State": "New Mexico", "Shootings Per Million": 17.26},
+      {"State": "District of Columbia", "Shootings Per Million": 15.18},
+      {"State": "Wyoming", "Shootings Per Million": 13.70},
+      {"State": "Oklahoma", "Shootings Per Million": 12.89},
+      {"State": "Alaska", "Shootings Per Million": 12.22}
+    ]
 
-      // set up the scales
-      var xScale = d3.scaleLinear()
-              .domain([0, d3.max(dataset, function(d){
-                  return d.properties.total_pop;
-              })])
-              .range([0, wScatter]);
+    var lowest = [
+      {"State": "Connecticut", "Shootings Per Million": 1.95},
+      {"State": "New York", "Shootings Per Million": 2.03},
+      {"State": "Maine", "Shootings Per Million": 2.26},
+      {"State": "Iowa", "Shootings Per Million": 2.57},
+      {"State": "North Dakota", "Shootings Per Million": 2.70}
+    ]
 
-      var yScale = d3.scaleLinear()
-              .domain([0, d3.max(dataset, function(d){
-                        return d.properties.shootings;
-              })])
-              .range([hScatter, 0]);
+    // get the table selection
+    function tabulate(highest, columns){
+      var table = d3.select("#table-percap").append("table");
+      var thead = table.append('thead');
+      var tbody = table.append('tbody');
 
-      // define the scatterplot svg
-      var svgScatter = d3.select('#scatterplot').append("svg")
-                         .attr("width", wScatter + margin.left + margin.right)
-                         .attr("height", hScatter + margin.top + margin.bottom)
-                         .append("g")
-                         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // add the header row
+       thead.append('tr')
+          .selectAll('.th-percap')
+          .data(columns)
+          .enter()
+          .append('th')
+          .text(function(column){ return column; })
+          .attr('class', 'th-percap');
 
-      // make the scatterplot
-      svgScatter.selectAll("circle")
+    // create a row for each object in the dataset
+        var rows = tbody.selectAll('.tr-percap')
+          .data(highest)
+          .enter()
+          .append('tr')
+          .attr('class', 'tr-percap');
+
+    // create a cell in each row for each columns
+      var cells = rows.selectAll('.td-percap')
+         .data(function(row){
+           return columns.map(function(column){
+             return {column: column, value: row[column]};
+           });
+         })
+         .enter()
+         .append('td')
+         .text(function(d){ return d.value; })
+         .attr('class', 'td-percap');
+
+         return table;
+    }
+
+    // render the table
+    tabulate(highest, ['State', 'Shootings Per Million']);
+
+    // change the table on button click
+    d3.select("#button-right-percap").on("click", function(){
+
+      $("#button-left-percap").removeClass('button-active-percap').addClass('button-inactive-percap')
+
+      var tbody = d3.select('#table-percap').select('tbody');
+      var columns = ['State', 'Shootings Per Million'];
+
+      tbody.selectAll(".tr-percap")
+        .data(lowest)
+        .selectAll(".td-percap")
+        .data(function(row){
+          return columns.map(function(column){
+            return {
+              column: column,
+              value: row[column]
+            };
+          });
+        })
+        .text(function(d){ return d.value; });
+
+    })
+
+    d3.select("#button-left-percap").on("click", function(){
+
+      $("#button-right-percap").removeClass('button-active-percap').addClass('button-inactive-percap')
+
+      var tbody = d3.select('#table-percap').select('tbody');
+      var columns = ['State', 'Shootings Per Million'];
+
+      tbody.selectAll(".tr-percap")
+        .data(highest)
+        .selectAll(".td-percap")
+        .data(function(row){
+          return columns.map(function(column){
+            return {
+              column: column,
+              value: row[column]
+            };
+          });
+        })
+        .text(function(d){ return d.value; });
+
+    })
+
+
+    // create a second svg for graduated circles
+    var svgCircles = d3.select("#map-container-raw").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+    // load the data
+    d3.json("Data/usa.geojson", function(error, usa) {
+      if (error) return console.error(error);
+      console.log(usa);
+      dataset = usa.features;
+
+      // set the radius scale for proportional symbols
+      var radius = d3.scaleSqrt()
+        .domain([0, 285])
+        .range([0, 80]);
+
+      svgCircles.append("g")
+          .attr("class", "states-invisible")
+          .selectAll("circle")
+          .data(dataset.sort(function(a, b) { return b.properties.shootings - a.properties.shootings; }))
+          .enter()
+          .append("circle")
+          .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+          .attr("r", function(d){ return radius(d.properties.shootings); })
+          .attr("stroke", "white")
+          .attr("stroke-width", 0.5)
+          .attr("fill", "#B24739")
+          .attr("fill-opacity", 0.5)
+          .on("mouseover", function(e){
+
+              d3.select("#state-raw")
                 .data(dataset)
-                .enter()
-                .append("circle")
-                .attr("cx", function(d){
-                return xScale(d.properties.total_pop);
-                })
-                .attr("cy", function(d){
-                return yScale(d.properties.shootings);
-                })
-                .attr("r", function(d){
-                return 4;
-                })
-                .attr("fill", "#B24739")
-                .attr("opacity", 0.5);
+                .text(function(){
+                  return e.properties.NAME;
+                });
 
-      // create axes
+              d3.select("#stat-raw")
+                .data(dataset)
+                .text(function(){
+                  return e.properties.shootings + ' shootings';
+                });
+            })
 
-      var x = d3.axisBottom(xScale)
-                .ticks(5)
+      // now add some labels
+      svgCircles.append("g")
+          .selectAll("text")
+          .data(dataset)
+          .enter()
+          .append("text")
+          .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+          .attr("class", "state-labels")
+          .text(function(d){ return d.properties.STUSPS });
 
-      var y = d3.axisLeft(yScale)
-                .ticks(5)
+      // and add a legend
 
-      var xAxis = svgScatter.append("g")
-                            .attr("transform", "translate(0," + hScatter + ")")
-                            .call(x);
+      var circlesLegendData = [10, 50, 100]
 
-      var yAxis = svgScatter.append("g")
-                            .call(y); */
+      var circlesLegend = svgCircles.append("g")
+          .attr("class", "legend-circles")
+          .attr("transform", "translate(" + (width - 140) + "," + (height) + ")")
+          .selectAll("g")
+          .data(circlesLegendData)
+          .enter()
+          .append("g");
 
-});
+      circlesLegend.append("circle")
+          .attr("cy", function(d){ return -radius(d); })
+          .attr("r", radius)
+          .attr("fill", "none")
+          .attr("stroke", "#B24739")
+          .attr("stroke-width", "0.5");
 
-// create a table for the highest and lowest state data
-// data definitions
-var highestRaw = [
-  {"State": "California", "Number of Shootings": 285},
-  {"State": "Texas", "Number of Shootings": 163},
-  {"State": "Florida", "Number of Shootings": 110},
-  {"State": "Arizona", "Number of Shootings": 66},
-  {"State": "Georgia", "Number of Shootings": 58}
-]
+      circlesLegend.append("text")
+          .text(function(d){ return d; })
+          .attr("y", function(d) { return -2 * radius(d); })
+          .attr("dy", "1.3em")
+          .attr("text-anchor", "middle")
+          .attr("fill", "#666")
+          .attr("font-size", "10px")
+          .attr("font-family", "HelveticaNeue-Bold, Helvetica, sans-serif");
 
-var lowestRaw = [
-  {"State": "Vermont", "Number of Shootings": 2},
-  {"State": "North Dakota", "Number of Shootings": 2},
-  {"State": "Maine", "Number of Shootings": 3},
-  {"State": "Rhode Island", "Number of Shootings": 3},
-  {"State": "New Hampshire", "Number of Shootings": 4}
-]
+    });
 
-// get the table selection
-function tabulateRaw(highestRaw, columns){
-  var table = d3.select('#total-table').append('table');
-  var thead = table.append('thead');
-  var tbody = table.append('tbody');
+    // create a table for the highest and lowest state data
+    // data definitions
+    var highestRaw = [
+      {"State": "California", "Number of Shootings": 285},
+      {"State": "Texas", "Number of Shootings": 163},
+      {"State": "Florida", "Number of Shootings": 110},
+      {"State": "Arizona", "Number of Shootings": 66},
+      {"State": "Georgia", "Number of Shootings": 58}
+    ]
 
-// add the header row
-   thead.append('tr')
-      .selectAll('.th-total')
-      .data(columns)
-      .enter()
-      .append('th')
-      .text(function(column){ return column; })
-      .attr('class','th-total');
+    var lowestRaw = [
+      {"State": "Vermont", "Number of Shootings": 2},
+      {"State": "North Dakota", "Number of Shootings": 2},
+      {"State": "Maine", "Number of Shootings": 3},
+      {"State": "Rhode Island", "Number of Shootings": 3},
+      {"State": "New Hampshire", "Number of Shootings": 4}
+    ]
 
-// create a row for each object in the dataset
-    var rows = tbody.selectAll('.tr-total')
-      .data(highestRaw)
-      .enter()
-      .append('tr')
-      .attr('class', 'tr-total');
+    // get the table selection
+    function tabulateRaw(highestRaw, columns){
+      var table = d3.select('#table-raw').append('table');
+      var thead = table.append('thead');
+      var tbody = table.append('tbody');
 
-// create a cell in each row for each columns
-  var cells = rows.selectAll('.td-total')
-     .data(function(row){
-       return columns.map(function(column){
-         return {column: column, value: row[column]};
-       });
-     })
-     .enter()
-     .append('td')
-     .text(function(d){ return d.value; })
-     .attr('class', 'td-total');
+    // add the header row
+       thead.append('tr')
+          .selectAll('.th-total')
+          .data(columns)
+          .enter()
+          .append('th')
+          .text(function(column){ return column; })
+          .attr('class','th-total');
 
-     return table;
-}
+    // create a row for each object in the dataset
+        var rows = tbody.selectAll('.tr-total')
+          .data(highestRaw)
+          .enter()
+          .append('tr')
+          .attr('class', 'tr-total');
 
-tabulateRaw(highestRaw, ['State', 'Number of Shootings']);
+    // create a cell in each row for each columns
+      var cells = rows.selectAll('.td-total')
+         .data(function(row){
+           return columns.map(function(column){
+             return {column: column, value: row[column]};
+           });
+         })
+         .enter()
+         .append('td')
+         .text(function(d){ return d.value; })
+         .attr('class', 'td-total');
 
-// change the table on button click
-d3.select("#button-right-2").on("click", function(){
+         return table;
+    }
 
-  $("#button-left-2").removeClass('button-active-2').addClass('button-inactive-2')
+    tabulateRaw(highestRaw, ['State', 'Number of Shootings']);
 
-  var tbody = d3.select('#total-table').select('tbody');
-  var columns = ['State', 'Number of Shootings'];
+    // change the table on button click
+    d3.select("#button-right-raw").on("click", function(){
 
-  tbody.selectAll('.tr-total')
-    .data(lowestRaw)
-    .selectAll('.td-total')
-    .data(function(row){
-      return columns.map(function(column){
-        return {
-          column: column,
-          value: row[column]
-        };
-      });
+      $("#button-left-raw").removeClass('button-active-raw').addClass('button-inactive-raw')
+
+      var tbody = d3.select('#table-raw').select('tbody');
+      var columns = ['State', 'Number of Shootings'];
+
+      tbody.selectAll('.tr-total')
+        .data(lowestRaw)
+        .selectAll('.td-total')
+        .data(function(row){
+          return columns.map(function(column){
+            return {
+              column: column,
+              value: row[column]
+            };
+          });
+        })
+        .text(function(d){ return d.value; });
+
     })
-    .text(function(d){ return d.value; });
 
-})
+    d3.select("#button-left-raw").on("click", function(){
 
-d3.select("#button-left-2").on("click", function(){
+      $("#button-right-raw").removeClass('button-active-raw').addClass('button-inactive-raw')
 
-  $("#button-right-2").removeClass('button-active-2').addClass('button-inactive-2')
+      var tbody = d3.select('#table-raw').select('tbody');
+      var columns = ['State', 'Number of Shootings'];
 
-  var tbody = d3.select('#total-table').select('tbody');
-  var columns = ['State', 'Number of Shootings'];
+      tbody.selectAll('.tr-total')
+        .data(highestRaw)
+        .selectAll('.td-total')
+        .data(function(row){
+          return columns.map(function(column){
+            return {
+              column: column,
+              value: row[column]
+            };
+          });
+        })
+        .text(function(d){ return d.value; });
 
-  tbody.selectAll('.tr-total')
-    .data(highestRaw)
-    .selectAll('.td-total')
-    .data(function(row){
-      return columns.map(function(column){
-        return {
-          column: column,
-          value: row[column]
-        };
-      });
     })
-    .text(function(d){ return d.value; });
 
-})
+    // now build a line graph to look at shootings based on time of year
 
-// now build a line graph to look at shootings based on time of year
+    // set dimensions of svg
+    var marginBar = {top: 20, right: 20, bottom: 30, left: 50},
+        widthBar = 1260 - marginBar.left - marginBar.right,
+        heightBar = 350 - marginBar.top - marginBar.bottom;
 
-// set dimensions of svg
-var marginBar = {top: 20, right: 20, bottom: 30, left: 50},
-    widthBar = 1260 - marginBar.left - marginBar.right,
-    heightBar = 350 - marginBar.top - marginBar.bottom;
+    // set a variable to parse the date
+    var parseTime = d3.timeParse("%d-%b-%y");
 
-// set a variable to parse the date
-var parseTime = d3.timeParse("%d-%b-%y");
+    // set the scales
+    var xScaleBar = d3.scaleTime()
+                      .range([0, widthBar]);
 
-// set the scales
-var xScaleBar = d3.scaleTime()
-                  .range([0, widthBar]);
+    var yScaleBar = d3.scaleLinear()
+                      .range([heightBar, 0]);
 
-var yScaleBar = d3.scaleLinear()
-                  .range([heightBar, 0]);
+    // add the svg
+    var svgBar = d3.select("#bar-chart").append("svg")
+        .attr("width", widthBar + marginBar.left + marginBar.right)
+        .attr("height", heightBar + marginBar.top + marginBar.bottom)
+        .append("g")
+        .attr("transform", "translate(" + marginBar.left + "," + marginBar.top + ")");
 
-// add the svg
-var svgBar = d3.select("#bar-chart").append("svg")
-    .attr("width", widthBar + marginBar.left + marginBar.right)
-    .attr("height", heightBar + marginBar.top + marginBar.bottom)
-    .append("g")
-    .attr("transform", "translate(" + marginBar.left + "," + marginBar.top + ")");
+    // load the data
+    d3.csv("Data/barchart.csv", function(error, data){
+      if (error) throw error;
+      console.log(data);
 
-// load the data
-d3.csv("barchart.csv", function(error, data){
-  if (error) throw error;
-  console.log(data);
+      // format the date
+      data.forEach(function(d){
+        d.date = parseTime(d.date);
+        d.count = +d.count;
+      })
 
-  // format the date
-  data.forEach(function(d){
-    d.date = parseTime(d.date);
-    d.count = +d.count;
-  })
+      // scale the domain of the data
+      xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
+      yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
 
-  // scale the domain of the data
-  xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
-  yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
+      // set the colors of the bars based on height
+      var barColors = ["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"];
 
-  // set the colors of the bars based on height
-  var barColors = ["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"];
+      // add the bars
+      svgBar.selectAll(".bar")
+          .data(data)
+          .enter()
+          .append("rect")
+          .attr("x", function(d){ return xScaleBar(d.date); })
+          .attr("width", widthBar / 556)
+          .attr("y", function(d){ return yScaleBar(d.count); })
+          .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+          .attr("fill", function(d){
+            if (d.count < 2){
+              return "#dadaeb";
+            }
+            else if (d.count < 4){
+              return "#bcbddc";
+            }
+            else if (d.count < 6){
+              return "#9e9ac8";
+            }
+            else {
+              return "#756bb1";
+            }
+          });
 
-  // add the bars
-  svgBar.selectAll(".bar")
-      .data(data)
-      .enter()
-      .append("rect")
-      .attr("x", function(d){ return xScaleBar(d.date); })
-      .attr("width", widthBar / 556)
-      .attr("y", function(d){ return yScaleBar(d.count); })
-      .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-      .attr("fill", function(d){
-        if (d.count < 2){
-          return "#dadaeb";
-        }
-        else if (d.count < 4){
-          return "#bcbddc";
-        }
-        else if (d.count < 6){
-          return "#9e9ac8";
-        }
-        else {
-          return "#756bb1";
-        }
-      });
+      // add the x axis
+      svgBar.append("g")
+          .attr("transform", "translate(0," + heightBar + ")")
+          .call(d3.axisBottom(xScaleBar).tickSize([3]))
+          .attr("text-anchor", "start");
 
-  // add the x axis
-  svgBar.append("g")
-      .attr("transform", "translate(0," + heightBar + ")")
-      .call(d3.axisBottom(xScaleBar).tickSize([3]))
-      .attr("text-anchor", "start");
+      // add the y axis
+      svgBar.append("g")
+          .call(d3.axisLeft(yScaleBar).tickSize([3]))
+          .attr("text-anchor", "end");
 
-  // add the y axis
-  svgBar.append("g")
-      .call(d3.axisLeft(yScaleBar).tickSize([3]))
-      .attr("text-anchor", "end");
+    });
 
-});
+    /* // create a scatterplot to visualize the data
 
+    // set svg dimensions
+    var margin = {top: 35, right: 35, bottom: 35, left: 35},
+        wScatter = 370 - margin.left - margin.right,
+        hScatter = 250 - margin.top - margin.bottom;
 
+    // set up the scales
+    var xScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function(d){
+                return d.properties.total_pop;
+            })])
+            .range([0, wScatter]);
 
+    var yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataset, function(d){
+                      return d.properties.shootings;
+            })])
+            .range([hScatter, 0]);
 
+    // define the scatterplot svg
+    var svgScatter = d3.select('#scatterplot').append("svg")
+                       .attr("width", wScatter + margin.left + margin.right)
+                       .attr("height", hScatter + margin.top + margin.bottom)
+                       .append("g")
+                       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // make the scatterplot
+    svgScatter.selectAll("circle")
+              .data(dataset)
+              .enter()
+              .append("circle")
+              .attr("cx", function(d){
+              return xScale(d.properties.total_pop);
+              })
+              .attr("cy", function(d){
+              return yScale(d.properties.shootings);
+              })
+              .attr("r", function(d){
+              return 4;
+              })
+              .attr("fill", "#B24739")
+              .attr("opacity", 0.5);
 
-</script>
+    // create axes
+
+    var x = d3.axisBottom(xScale)
+              .ticks(5)
+
+    var y = d3.axisLeft(yScale)
+              .ticks(5)
+
+    var xAxis = svgScatter.append("g")
+                          .attr("transform", "translate(0," + hScatter + ")")
+                          .call(x);
+
+    var yAxis = svgScatter.append("g")
+                          .call(y); */
+
+    </script>
+  </body>
+</html>
