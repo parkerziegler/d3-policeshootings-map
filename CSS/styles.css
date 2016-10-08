@@ -394,3 +394,69 @@ td {
 .bar {
   fill: steelblue;
 }
+
+/* bar chart buttons */
+
+#button-container-date {
+  position: absolute;
+  top: 1280px;
+  left: 1000px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+#button-day {
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 2px solid #9e9ac8;
+  width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  margin: 10px;
+}
+
+#button-month {
+  font-family: "HelveticaNeue-Light", Helvetica, sans-serif;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 2px solid #9e9ac8;
+  width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+  margin: 10px;
+}
+
+#button-day:hover {
+  color: #fff;
+  background: #756bb1;
+}
+
+#button-day:focus {
+  color: #fff;
+  background: #756bb1;
+}
+
+#button-month:hover {
+  color: #fff;
+  background: #756bb1;
+  outline: 0;
+}
+
+#button-month:focus {
+  color: #fff;
+  background: #756bb1;
+  outline: 0;
+}
+
+.button-active-date {
+  color: #fff;
+  background: #756bb1;
+}
+
+.button-inactive-date {
+  color: #756bb1;
+  background: #fff;
+}

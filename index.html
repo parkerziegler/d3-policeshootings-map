@@ -35,7 +35,11 @@
     </div>
     <div id="bar-chart"></div>
     <h1 id="sidebar-title-date" class="section-title">How are Shootings<br>Distributed Over <br> the Course of the Year?</h1>
-    <p id="description-date" class="description">Examining the data reveals no distinct temporal trends in police involved shootings. <br><br>In the time period surveyed, <b>July 2015</b> and <b>March 2015</b> had the most shootings of any month <br>at <b>124</b> and <b>113</b>, respectively. <b>June 2015</b> and <b>April 2016</b> tied for the least, each with <b>80</b> shootings.<br> Perhaps the most troubling aspect of this visualization is that there have only been <b>27 days</b> <br>in this <b>556-day time period</b> in which no police involved shootings occurred.</p>
+    <p id="description-date" class="description"><b>The data reveals no distinct temporal trends in police involved shootings.</b> <br>However, in the time period surveyed, <b>July 2015</b> and <b>March 2015</b> had the most <br>shootings of any month at <b>124</b> and <b>113</b>, respectively. <b>June 2015</b> and <b>April 2016</b> <br>tied for the least, each with <b>80</b> shootings. There have only been <b>27 days</b> in this <br><b>556-day time period</b> in which no police involved shootings occurred.</p>
+    <div id="button-container-date">
+      <button id="button-day" class="button-active-date">By Day</button>
+      <button id="button-month" class="button-inactive-date">By Month</button>
+    </div>
     <div id="scatterplot"></div>
 
     <script type="text/javascript">
@@ -536,7 +540,11 @@
           .call(d3.axisLeft(yScaleBar).tickSize([3]))
           .attr("text-anchor", "end");
 
+      // transition the bar on button click
+
+
     });
+
 
     /* // create a scatterplot to visualize the data
 
