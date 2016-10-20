@@ -463,7 +463,7 @@
 
     })
 
-    // now build a line graph to look at shootings based on time of year
+    // now build a bar graph to look at shootings based on time of year
 
     // set dimensions of svg
     var marginBar = {top: 20, right: 20, bottom: 30, left: 50},
@@ -533,15 +533,182 @@
       svgBar.append("g")
           .attr("transform", "translate(0," + heightBar + ")")
           .call(d3.axisBottom(xScaleBar).tickSize([3]))
-          .attr("text-anchor", "start");
+          .attr("text-anchor", "start")
+          .attr("class", "xaxis");
 
       // add the y axis
       svgBar.append("g")
           .call(d3.axisLeft(yScaleBar).tickSize([3]))
-          .attr("text-anchor", "end");
+          .attr("text-anchor", "end")
+          .attr("class", "yaxis");
 
       // transition the bar on button click
+      d3.select("#button-month")
+        .on("click", function(){
 
+          // start by applying the new class to the day button
+          $("#button-day").removeClass('button-active-date').addClass('button-inactive-date')
+
+          // update the dataset
+          d3.csv("Data/shootings_by_month.csv", function(error, data){
+            if (error) throw error;
+            console.log(data);
+
+            // format the date
+            var parseTime = d3.timeParse("%b-%y")
+
+            data.forEach(function(d){
+              d.date = parseTime(d.date);
+              d.count = +d.count;
+            })
+
+            // update the domains of the scales
+            xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
+            yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
+
+            // update the axes
+            d3.select(".xaxis")
+              .transition()
+              .duration(1500)
+              .delay(2000)
+              .call(d3.axisBottom(xScaleBar).tickSize([3]))
+
+            d3.select(".yaxis")
+              .transition()
+              .duration(1500)
+              .delay(2000)
+              .call(d3.axisLeft(yScaleBar).tickSize([3]))
+
+            // select all the bars and append the dataset
+            var bars = svgBar.selectAll("rect")
+                             .data(data);
+
+            // enter the new bars
+            bars.enter()
+                .append("rect")
+                .attr("x", function(d){ return xScaleBar(d.date); })
+                .attr("width", widthBar / 19)
+                .attr("y", function(d){ return yScaleBar(d.count); })
+                .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+                .attr("opacity", 0)
+
+            // update...
+            bars.transition()
+                .duration(2000)
+                .attr("x", function(d){ return xScaleBar(d.date); })
+                .attr("width", widthBar / 19)
+                .attr("y", function(d){ return yScaleBar(d.count); })
+                .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+                .attr("fill", function(d){
+                  if (d.count < 90){
+                    return "#dadaeb";
+                  }
+                  else if (d.count < 100){
+                    return "#bcbddc";
+                  }
+                  else if (d.count < 110){
+                    return "#9e9ac8";
+                  }
+                  else {
+                    return "#756bb1";
+                  }
+                })
+                .attr("opacity", 1)
+
+            // exit...
+            bars.exit()
+                .transition()
+                .duration(500)
+                .attr("opacity", 0)
+                .remove();
+
+
+          })
+        })
+
+        // transition the bar on button click
+        d3.select("#button-day")
+          .on("click", function(){
+
+            // start by applying the new class to the day button
+            $("#button-month").removeClass('button-active-date').addClass('button-inactive-date')
+
+            // update the dataset
+            d3.csv("Data/barchart.csv", function(error, data){
+              if (error) throw error;
+              console.log(data);
+
+              // format the date
+              var parseTime = d3.timeParse("%d-%b-%y");
+
+              data.forEach(function(d){
+                d.date = parseTime(d.date);
+                d.count = +d.count;
+              })
+
+              // update the domains of the scales
+              xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
+              yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
+
+              // update the axes
+              d3.select(".xaxis")
+                .transition()
+                .duration(1500)
+                .delay(2000)
+                .call(d3.axisBottom(xScaleBar).tickSize([3]))
+
+              d3.select(".yaxis")
+                .transition()
+                .duration(1500)
+                .delay(2000)
+                .call(d3.axisLeft(yScaleBar).tickSize([3]))
+
+              // select all the bars and append the dataset
+              var bars = svgBar.selectAll("rect")
+                               .data(data);
+
+              // enter the new bars
+              bars.enter()
+                  .append("rect")
+                  .attr("x", function(d){ return xScaleBar(d.date); })
+                  .attr("width", widthBar / 556)
+                  .attr("y", function(d){ return yScaleBar(d.count); })
+                  .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+                  .attr("opacity", 0)
+
+              // update...
+              bars.transition()
+                  .duration(2000)
+                  .attr("x", function(d){ return xScaleBar(d.date); })
+                  .attr("width", widthBar / 556)
+                  .attr("y", function(d){ return yScaleBar(d.count); })
+                  .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+                  .attr("fill", function(d){
+                    if (d.count < 2){
+                      return "#dadaeb";
+                    }
+                    else if (d.count < 4){
+                      return "#bcbddc";
+                    }
+                    else if (d.count < 6){
+                      return "#9e9ac8";
+                    }
+                    else {
+                      return "#756bb1";
+                    }
+                  })
+                  .attr("opacity", 1)
+
+              // exit...
+              bars.exit()
+                  .transition()
+                  .duration(500)
+                  .attr("opacity", 0)
+                  .remove();
+
+
+            })
+          })
 
     });
 
