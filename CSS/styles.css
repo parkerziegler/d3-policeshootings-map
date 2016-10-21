@@ -432,11 +432,13 @@ td {
 #button-day:hover {
   color: #fff;
   background: #756bb1;
+  outline: 0;
 }
 
 #button-day:focus {
   color: #fff;
   background: #756bb1;
+  outline: 0;
 }
 
 #button-month:hover {

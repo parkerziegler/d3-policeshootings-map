@@ -467,11 +467,12 @@
 
     // set dimensions of svg
     var marginBar = {top: 20, right: 20, bottom: 30, left: 50},
-        widthBar = 1260 - marginBar.left - marginBar.right,
+        widthBar = 1200 - marginBar.left - marginBar.right,
         heightBar = 350 - marginBar.top - marginBar.bottom;
 
-    // set a variable to parse the date
-    var parseTime = d3.timeParse("%d-%b-%y");
+    // set a variable to parse the date for both days (parseDay) and months (parseMonth)
+    var parseDay = d3.timeParse("%d-%b-%y");
+    var parseMonth = d3.timeParse("%Y-%m");
 
     // set the scales
     var xScaleBar = d3.scaleTime()
@@ -494,9 +495,9 @@
 
       // format the date
       data.forEach(function(d){
-        d.date = parseTime(d.date);
+        d.date = parseDay(d.date);
         d.count = +d.count;
-      })
+      });
 
       // scale the domain of the data
       xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
@@ -511,7 +512,7 @@
           .enter()
           .append("rect")
           .attr("x", function(d){ return xScaleBar(d.date); })
-          .attr("width", widthBar / 556)
+          .attr("width", widthBar / data.length)
           .attr("y", function(d){ return yScaleBar(d.count); })
           .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
           .attr("fill", function(d){
@@ -542,175 +543,184 @@
           .attr("text-anchor", "end")
           .attr("class", "yaxis");
 
-      // transition the bar on button click
-      d3.select("#button-month")
-        .on("click", function(){
+      })
 
-          // start by applying the new class to the day button
-          $("#button-day").removeClass('button-active-date').addClass('button-inactive-date')
+// transition the bar on button click
+d3.select("#button-month")
+  .on("click", function(){
 
-          // update the dataset
-          d3.csv("Data/shootings_by_month.csv", function(error, data){
-            if (error) throw error;
-            console.log(data);
+    // start by applying the new class to the day button
+    $("#button-day").removeClass('button-active-date').addClass('button-inactive-date')
 
-            // format the date
-            var parseTime = d3.timeParse("%b-%y")
+    // update the dataset
+    d3.csv("Data/shootings_by_month.csv", function(error, data){
+      if (error) throw error;
 
-            data.forEach(function(d){
-              d.date = parseTime(d.date);
-              d.count = +d.count;
-            })
+      // format the date
+      data.forEach(function(d){
+        d.date = parseMonth(d.date);
+        d.count = +d.count;
+      });
 
-            // update the domains of the scales
-            xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
-            yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
+      console.log(data);
 
-            // update the axes
-            d3.select(".xaxis")
-              .transition()
-              .duration(1500)
-              .delay(2000)
-              .call(d3.axisBottom(xScaleBar).tickSize([3]))
+      // update the scale domains
+      xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
+      yScaleBar.domain([70, d3.max(data, function(d){ return d.count; })]);
 
-            d3.select(".yaxis")
-              .transition()
-              .duration(1500)
-              .delay(2000)
-              .call(d3.axisLeft(yScaleBar).tickSize([3]))
+      // select all the bars and bind the data
+      var bars = svgBar.selectAll("rect")
+                       .data(data);
 
-            // select all the bars and append the dataset
-            var bars = svgBar.selectAll("rect")
-                             .data(data);
+      bars.exit()
+          .transition()
+          .duration(1000)
+          .attr("height", 0)
+          .remove();
 
-            // enter the new bars
-            bars.enter()
-                .append("rect")
-                .attr("x", function(d){ return xScaleBar(d.date); })
-                .attr("width", widthBar / 19)
-                .attr("y", function(d){ return yScaleBar(d.count); })
-                .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-                .attr("opacity", 0)
+      // transition the data
+      bars.transition()
+          .duration(2000)
+          .delay(function(d, i){ return i * 50 + 500; })
+          .attr("x", function(d){ return xScaleBar(d.date); })
+          .attr("width", widthBar / data.length)
+          .attr("y", function(d){ return yScaleBar(d.count); })
+          .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+          .attr("class", "oldies")
+          .attr("fill", function(d){
+            if (d.count < 90){
+              return "#dadaeb";
+            }
+            else if (d.count < 100){
+              return "#bcbddc";
+            }
+            else if (d.count < 110){
+              return "#9e9ac8";
+            }
+            else {
+              return "#756bb1";
+            }
+          });
 
-            // update...
-            bars.transition()
-                .duration(2000)
-                .attr("x", function(d){ return xScaleBar(d.date); })
-                .attr("width", widthBar / 19)
-                .attr("y", function(d){ return yScaleBar(d.count); })
-                .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-                .attr("fill", function(d){
-                  if (d.count < 90){
-                    return "#dadaeb";
-                  }
-                  else if (d.count < 100){
-                    return "#bcbddc";
-                  }
-                  else if (d.count < 110){
-                    return "#9e9ac8";
-                  }
-                  else {
-                    return "#756bb1";
-                  }
-                })
-                .attr("opacity", 1)
+      // update the axes
+      d3.select(".xaxis")
+        .transition()
+        .duration(2000)
+        .delay(2000)
+        .call(d3.axisBottom(xScaleBar).tickSize([3]))
 
-            // exit...
-            bars.exit()
-                .transition()
-                .duration(2000)
-                .attr("opacity", 0)
-                .remove();
+        d3.select(".yaxis")
+          .transition()
+          .duration(2000)
+          .delay(2000)
+          .call(d3.axisLeft(yScaleBar).tickSize([3]))
 
+    })
 
-          })
-        })
+  })
 
-        // transition the bar on button click
-        d3.select("#button-day")
-          .on("click", function(){
+// reset the bar chart
+d3.select("#button-day")
+.on("click", function(){
 
-            // start by applying the new class to the day button
-            $("#button-month").removeClass('button-active-date').addClass('button-inactive-date')
+  // start by applying the new class to the day button
+  $("#button-month").removeClass('button-active-date').addClass('button-inactive-date')
 
-            // update the dataset
-            d3.csv("Data/barchart.csv", function(error, data){
-              if (error) throw error;
+  svgBar.selectAll(".oldies")
+        .exit()
+        .transition()
+        .duration(1000)
+        .attr("height", 0)
+        .remove();
 
-              // format the date
-              var parseTime = d3.timeParse("%d-%b-%y");
+  // update the dataset
+  d3.csv("Data/barchart.csv", function(error, data){
+    if (error) throw error;
 
-              data.forEach(function(d){
-                d.date = parseTime(d.date);
-                d.count = +d.count;
-              })
-
-              // update the domains of the scales
-              xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
-              yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
-
-              // select all the bars and append the dataset
-              var bars = svgBar.selectAll("rect")
-                               .data(data);
-
-              console.log(data);
-
-               // enter the new bars
-               bars.enter()
-                   .append("rect")
-                   .attr("x", function(d){ return xScaleBar(d.date); })
-                   .attr("width", widthBar / 556)
-                   .attr("y", function(d){ return yScaleBar(d.count); })
-                   .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-                   .attr("opacity", 0)
-
-               // update...
-               bars.transition()
-                   .duration(2000)
-                   .attr("x", function(d){ return xScaleBar(d.date); })
-                   .attr("width", widthBar / 556)
-                   .attr("y", function(d){ return yScaleBar(d.count); })
-                   .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-                   .attr("fill", function(d){
-                     if (d.count < 2){
-                       return "#dadaeb";
-                     }
-                     else if (d.count < 4){
-                       return "#bcbddc";
-                     }
-                     else if (d.count < 6){
-                       return "#9e9ac8";
-                     }
-                     else {
-                       return "#756bb1";
-                     }
-                   })
-                   .attr("opacity", 1);
-
-              // exit...
-              bars.exit()
-                  .transition()
-                  .duration(2000)
-                  .attr("opacity", 0)
-                  .remove();
-
-              // update the axes
-              d3.select(".xaxis")
-                .transition()
-                .duration(1500)
-                .delay(2000)
-                .call(d3.axisBottom(xScaleBar).tickSize([3]))
-
-              d3.select(".yaxis")
-                .transition()
-                .duration(1500)
-                .delay(2000)
-                .call(d3.axisLeft(yScaleBar).tickSize([3]))
-
-            })
-          })
-
+    // format the date
+    data.forEach(function(d){
+      d.date = parseDay(d.date);
+      d.count = +d.count;
     });
+
+    console.log(data);
+
+    // update the scale domains
+    xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
+    yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
+
+    // select all the bars and bind the data
+    var bars = svgBar.selectAll("rect")
+                     .data(data);
+
+    bars.attr("x", function(d){ return xScaleBar(d.date); })
+        .attr("width", widthBar / data.length)
+        .attr("y", function(d){ return yScaleBar(d.count); })
+        .attr("height", 0)
+        .attr("fill", function(d){
+          if (d.count < 2){
+            return "#dadaeb";
+          }
+          else if (d.count < 4){
+            return "#bcbddc";
+          }
+          else if (d.count < 6){
+            return "#9e9ac8";
+          }
+          else {
+            return "#756bb1";
+          }
+        })
+        .enter()
+         .append("rect")
+         .attr("x", function(d){ return xScaleBar(d.date); })
+         .attr("width", widthBar / data.length)
+         .attr("y", function(d){ return yScaleBar(d.count); })
+         .attr("height", 0)
+         .attr("fill", function(d){
+           if (d.count < 2){
+             return "#dadaeb";
+           }
+           else if (d.count < 4){
+             return "#bcbddc";
+           }
+           else if (d.count < 6){
+             return "#9e9ac8";
+           }
+           else {
+             return "#756bb1";
+           }
+         });
+
+    // transition the data
+    bars.transition()
+        .duration(2000)
+        .delay(function(d, i){ return i * 1; })
+        .attr("height", function(d){ return heightBar - yScaleBar(d.count); });
+
+    // remove the old bars
+    bars.exit()
+        .transition()
+        .duration(1000)
+        .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+        .remove();
+
+    // update the axes
+    d3.select(".xaxis")
+      .transition()
+      .duration(2000)
+      .delay(2000)
+      .call(d3.axisBottom(xScaleBar).tickSize([3]))
+
+      d3.select(".yaxis")
+        .transition()
+        .duration(2000)
+        .delay(2000)
+        .call(d3.axisLeft(yScaleBar).tickSize([3]))
+
+  })
+
+})
 
 
     /* // create a scatterplot to visualize the data
