@@ -618,7 +618,7 @@
             // exit...
             bars.exit()
                 .transition()
-                .duration(500)
+                .duration(2000)
                 .attr("opacity", 0)
                 .remove();
 
@@ -636,7 +636,6 @@
             // update the dataset
             d3.csv("Data/barchart.csv", function(error, data){
               if (error) throw error;
-              console.log(data);
 
               // format the date
               var parseTime = d3.timeParse("%d-%b-%y");
@@ -650,6 +649,51 @@
               xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
               yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
 
+              // select all the bars and append the dataset
+              var bars = svgBar.selectAll("rect")
+                               .data(data);
+
+              console.log(data);
+
+               // enter the new bars
+               bars.enter()
+                   .append("rect")
+                   .attr("x", function(d){ return xScaleBar(d.date); })
+                   .attr("width", widthBar / 556)
+                   .attr("y", function(d){ return yScaleBar(d.count); })
+                   .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+                   .attr("opacity", 0)
+
+               // update...
+               bars.transition()
+                   .duration(2000)
+                   .attr("x", function(d){ return xScaleBar(d.date); })
+                   .attr("width", widthBar / 556)
+                   .attr("y", function(d){ return yScaleBar(d.count); })
+                   .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
+                   .attr("fill", function(d){
+                     if (d.count < 2){
+                       return "#dadaeb";
+                     }
+                     else if (d.count < 4){
+                       return "#bcbddc";
+                     }
+                     else if (d.count < 6){
+                       return "#9e9ac8";
+                     }
+                     else {
+                       return "#756bb1";
+                     }
+                   })
+                   .attr("opacity", 1);
+
+              // exit...
+              bars.exit()
+                  .transition()
+                  .duration(2000)
+                  .attr("opacity", 0)
+                  .remove();
+
               // update the axes
               d3.select(".xaxis")
                 .transition()
@@ -662,50 +706,6 @@
                 .duration(1500)
                 .delay(2000)
                 .call(d3.axisLeft(yScaleBar).tickSize([3]))
-
-              // select all the bars and append the dataset
-              var bars = svgBar.selectAll("rect")
-                               .data(data);
-
-              // enter the new bars
-              bars.enter()
-                  .append("rect")
-                  .attr("x", function(d){ return xScaleBar(d.date); })
-                  .attr("width", widthBar / 556)
-                  .attr("y", function(d){ return yScaleBar(d.count); })
-                  .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-                  .attr("opacity", 0)
-
-              // update...
-              bars.transition()
-                  .duration(2000)
-                  .attr("x", function(d){ return xScaleBar(d.date); })
-                  .attr("width", widthBar / 556)
-                  .attr("y", function(d){ return yScaleBar(d.count); })
-                  .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-                  .attr("fill", function(d){
-                    if (d.count < 2){
-                      return "#dadaeb";
-                    }
-                    else if (d.count < 4){
-                      return "#bcbddc";
-                    }
-                    else if (d.count < 6){
-                      return "#9e9ac8";
-                    }
-                    else {
-                      return "#756bb1";
-                    }
-                  })
-                  .attr("opacity", 1)
-
-              // exit...
-              bars.exit()
-                  .transition()
-                  .duration(500)
-                  .attr("opacity", 0)
-                  .remove();
-
 
             })
           })
