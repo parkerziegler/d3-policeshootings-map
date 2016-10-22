@@ -507,7 +507,7 @@
       var barColors = ["#f2f0f7", "#dadaeb", "#bcbddc", "#9e9ac8", "#756bb1", "#54278f"];
 
       // add the bars
-      svgBar.selectAll(".bar")
+      svgBar.selectAll("rect")
           .data(data)
           .enter()
           .append("rect")
@@ -572,6 +572,7 @@ d3.select("#button-month")
       var bars = svgBar.selectAll("rect")
                        .data(data);
 
+      // get rid of unnecessary bars
       bars.exit()
           .transition()
           .duration(1000)
@@ -586,7 +587,6 @@ d3.select("#button-month")
           .attr("width", widthBar / data.length)
           .attr("y", function(d){ return yScaleBar(d.count); })
           .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-          .attr("class", "oldies")
           .attr("fill", function(d){
             if (d.count < 90){
               return "#dadaeb";
@@ -609,11 +609,11 @@ d3.select("#button-month")
         .delay(2000)
         .call(d3.axisBottom(xScaleBar).tickSize([3]))
 
-        d3.select(".yaxis")
-          .transition()
-          .duration(2000)
-          .delay(2000)
-          .call(d3.axisLeft(yScaleBar).tickSize([3]))
+      d3.select(".yaxis")
+        .transition()
+        .duration(2000)
+        .delay(2000)
+        .call(d3.axisLeft(yScaleBar).tickSize([3]))
 
     })
 
@@ -621,17 +621,10 @@ d3.select("#button-month")
 
 // reset the bar chart
 d3.select("#button-day")
-.on("click", function(){
+  .on("click", function(){
 
   // start by applying the new class to the day button
   $("#button-month").removeClass('button-active-date').addClass('button-inactive-date')
-
-  svgBar.selectAll(".oldies")
-        .exit()
-        .transition()
-        .duration(1000)
-        .attr("height", 0)
-        .remove();
 
   // update the dataset
   d3.csv("Data/barchart.csv", function(error, data){
@@ -643,8 +636,6 @@ d3.select("#button-day")
       d.count = +d.count;
     });
 
-    console.log(data);
-
     // update the scale domains
     xScaleBar.domain(d3.extent(data, function(d){ return d.date; }));
     yScaleBar.domain([0, d3.max(data, function(d){ return d.count; })]);
@@ -653,10 +644,13 @@ d3.select("#button-day")
     var bars = svgBar.selectAll("rect")
                      .data(data);
 
-    bars.attr("x", function(d){ return xScaleBar(d.date); })
+    // update the bars
+    bars.transition()
+        .duration(2000)
+        .attr("x", function(d){ return xScaleBar(d.date); })
         .attr("width", widthBar / data.length)
         .attr("y", function(d){ return yScaleBar(d.count); })
-        .attr("height", 0)
+        .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
         .attr("fill", function(d){
           if (d.count < 2){
             return "#dadaeb";
@@ -670,40 +664,36 @@ d3.select("#button-day")
           else {
             return "#756bb1";
           }
-        })
-        .enter()
-         .append("rect")
-         .attr("x", function(d){ return xScaleBar(d.date); })
-         .attr("width", widthBar / data.length)
-         .attr("y", function(d){ return yScaleBar(d.count); })
-         .attr("height", 0)
-         .attr("fill", function(d){
-           if (d.count < 2){
-             return "#dadaeb";
-           }
-           else if (d.count < 4){
-             return "#bcbddc";
-           }
-           else if (d.count < 6){
-             return "#9e9ac8";
-           }
-           else {
-             return "#756bb1";
-           }
-         });
+        });
+
+    // enter the new bars
+    bars.enter()
+       .append("rect")
+       .attr("class", "new")
+       .attr("x", function(d){ return xScaleBar(d.date); })
+       .attr("width", widthBar / data.length)
+       .attr("y", function(d){ return yScaleBar(d.count); })
+       .attr("height", 0)
+       .attr("fill", function(d){
+         if (d.count < 2){
+           return "#dadaeb";
+         }
+         else if (d.count < 4){
+           return "#bcbddc";
+         }
+         else if (d.count < 6){
+           return "#9e9ac8";
+         }
+         else {
+           return "#756bb1";
+         }
+       });
 
     // transition the data
-    bars.transition()
+    var newBars = svgBar.selectAll(".new").transition()
         .duration(2000)
-        .delay(function(d, i){ return i * 1; })
-        .attr("height", function(d){ return heightBar - yScaleBar(d.count); });
-
-    // remove the old bars
-    bars.exit()
-        .transition()
-        .duration(1000)
+        .delay(function(d, i){ return 1000 + i * 2; })
         .attr("height", function(d){ return heightBar - yScaleBar(d.count); })
-        .remove();
 
     // update the axes
     d3.select(".xaxis")
